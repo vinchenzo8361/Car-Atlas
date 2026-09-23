@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
 :root {
+  --bg-color: #050505;
   --glass-bg: rgba(15, 15, 20, 0.45);
   --glass-border: rgba(255, 255, 255, 0.15);
   --glass-blur: blur(24px);
@@ -8,6 +9,14 @@
   --text-secondary: #a0a0a0;
   --accent-color: #007acc;
   --accent-hover: #0099ff;
+}
+
+body.light-mode {
+  --bg-color: #e0e5ec;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --text-primary: #111111;
+  --text-secondary: #555555;
 }
 
 * {
@@ -21,8 +30,9 @@ body, html {
   height: 100%;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
-  background-color: #050505;
+  background-color: var(--bg-color);
   color: var(--text-primary);
+  transition: background-color 0.4s, color 0.4s;
 }
 
 #webgl-canvas {
@@ -51,8 +61,9 @@ body, html {
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
   pointer-events: auto;
+  transition: background 0.4s, border-color 0.4s;
 }
 
 /* Header */
@@ -87,6 +98,10 @@ nav button:hover, nav button.active {
   color: var(--text-primary);
 }
 
+#btn-theme-toggle {
+  font-size: 1.25rem;
+}
+
 /* Centered Overlay (Card Grid) */
 .centered-overlay {
   position: absolute;
@@ -102,8 +117,27 @@ nav button:hover, nav button.active {
   transition: opacity 0.4s, transform 0.4s;
 }
 
-.centered-overlay h2 {
+.overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 2rem;
+}
+
+.text-btn {
+  background: transparent;
+  border: none;
+  color: var(--accent-color);
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+}
+
+.centered-overlay h2 {
   text-align: center;
   font-weight: 400;
   letter-spacing: 1px;
@@ -115,24 +149,38 @@ nav button:hover, nav button.active {
   gap: 1.5rem;
 }
 
-.car-card {
-  background: rgba(255, 255, 255, 0.05);
+.car-card, .brand-card {
+  background: rgba(100, 100, 100, 0.1);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
-.car-card:hover {
+.brand-card {
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.brand-card h3 {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.car-card:hover, .brand-card:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  background: rgba(100, 100, 100, 0.2);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 .car-card img {
   width: 100%;
-  height: 160px;
+  height: 180px;
   object-fit: cover;
 }
 
@@ -201,7 +249,7 @@ nav button:hover, nav button.active {
   display: flex;
   justify-content: space-between;
   padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(150,150,150,0.1);
   font-size: 0.9rem;
 }
 
@@ -224,15 +272,15 @@ nav button:hover, nav button.active {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.2);
+  border: 2px solid var(--glass-border);
   cursor: pointer;
   transition: transform 0.2s, border-color 0.2s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .color-swatch:hover {
   transform: scale(1.15);
-  border-color: #fff;
+  border-color: var(--text-primary);
 }
 
 /* Controls */
@@ -267,7 +315,7 @@ nav button:hover, nav button.active {
 .progress-bar-container {
   width: 100%;
   height: 8px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(150,150,150,0.2);
   border-radius: 4px;
   margin-top: 1.5rem;
   overflow: hidden;

@@ -19,12 +19,24 @@
           <button id="btn-showroom" class="active">Showroom</button>
           <button id="btn-aero">Aero Lab</button>
           <button id="btn-garage">My Garage</button>
+          <button id="btn-theme-toggle" title="Toggle Light/Dark Mode">🌓</button>
         </nav>
       </header>
 
-      <!-- Vehicle Selection Modal (Grid) -->
-      <div id="selection-overlay" class="glass-panel centered-overlay">
-        <h2>Select a Vehicle</h2>
+      <!-- Brand Selection Overlay -->
+      <div id="brand-overlay" class="glass-panel centered-overlay">
+        <h2>Select a Brand</h2>
+        <div class="card-grid" id="brand-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Vehicle Selection Overlay -->
+      <div id="selection-overlay" class="glass-panel centered-overlay hidden">
+        <div class="overlay-header">
+          <button id="btn-back-brands" class="text-btn">← Back to Brands</button>
+          <h2 id="brand-title">Select a Vehicle</h2>
+        </div>
         <div class="card-grid" id="vehicle-grid">
           <!-- Populated by JS -->
         </div>
@@ -34,7 +46,7 @@
       <div id="specs-sidebar" class="sidebar glass-panel right-panel hidden">
         <div class="sidebar-header">
           <h2 id="current-car-name">Vehicle Name</h2>
-          <button id="btn-change-car" class="icon-btn">✕</button>
+          <button id="btn-change-car" class="icon-btn" title="Back to Selection">✕</button>
         </div>
         
         <div id="specs-content">
@@ -44,7 +56,11 @@
         <div id="interactions" class="hidden">
           <h3>Colors</h3>
           <div id="color-picker">
-            <!-- Populated by JS -->
+            <div class="color-swatch" style="background: #cc0000;" onclick="changeCarColor('#cc0000')"></div>
+            <div class="color-swatch" style="background: #c0c0c0;" onclick="changeCarColor('#c0c0c0')"></div>
+            <div class="color-swatch" style="background: #111111;" onclick="changeCarColor('#111111')"></div>
+            <div class="color-swatch" style="background: #ffffff;" onclick="changeCarColor('#ffffff')"></div>
+            <div class="color-swatch" style="background: #0055ff;" onclick="changeCarColor('#0055ff')"></div>
           </div>
         </div>
 
