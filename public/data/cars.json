@@ -1,53 +1,99 @@
 {
   "vehicles": [
     {
-      "id": "porsche_911_gt3",
-      "name": "Porsche 911 GT3 (992)",
+      "id": "porsche_911_turbo",
+      "name": "Porsche 911 Turbo (1975)",
       "type": "car",
-      "modelPath": "/models/cars/porsche_911.glb",
+      "modelUrl": "https://vazxmixizkinqawvzxvi.supabase.co/storage/v1/object/public/models/porsche-1975/model.gltf",
+      "thumbnail": "https://images.unsplash.com/photo-1503376712351-1f22f646b9a8?auto=format&fit=crop&w=600&q=80",
       "specs": {
-        "engine": "4.0L Naturally Aspirated Flat-6",
-        "power": "502 hp @ 8,400 rpm",
-        "torque": "346 lb-ft @ 6,100 rpm",
-        "0_60": "3.2 seconds",
-        "top_speed": "197 mph",
-        "weight": "3,164 lbs",
-        "drag_coefficient": 0.33,
-        "downforce": "849 lbs @ 124 mph"
+        "engine": "3.0L Turbocharged Flat-6",
+        "power": "256 hp @ 5,500 rpm",
+        "torque": "243 lb-ft @ 4,000 rpm",
+        "0_60": "5.2 seconds",
+        "top_speed": "155 mph",
+        "weight": "2,635 lbs",
+        "drag_coefficient": 0.39,
+        "downforce": "N/A"
       },
       "interactions": {
         "doors": ["door_left", "door_right"],
-        "hood": ["hood", "engine_cover"],
+        "hood": ["hood"],
         "lights": ["headlight_L", "headlight_R", "taillight"]
       },
       "availableColors": [
         {"name": "Guards Red", "hex": "#cc0000"},
-        {"name": "Shark Blue", "hex": "#0055ff"},
-        {"name": "GT Silver Metallic", "hex": "#c0c0c0"},
-        {"name": "Racing Yellow", "hex": "#ffcc00"}
+        {"name": "Silver Metallic", "hex": "#c0c0c0"},
+        {"name": "Black", "hex": "#111111"}
       ]
     },
     {
-      "id": "ducati_panigale_v4",
-      "name": "Ducati Panigale V4 S",
-      "type": "bike",
-      "modelPath": "/models/bikes/ducati_v4.glb",
+      "id": "mclaren_p1",
+      "name": "McLaren P1",
+      "type": "car",
+      "modelUrl": null,
+      "thumbnail": "https://images.unsplash.com/photo-1621648074902-601e7498c8dc?auto=format&fit=crop&w=600&q=80",
       "specs": {
-        "engine": "1,103cc Desmosedici Stradale V4",
-        "power": "214 hp @ 13,000 rpm",
-        "torque": "91.5 lb-ft @ 10,000 rpm",
-        "0_60": "2.9 seconds",
-        "top_speed": "186 mph (Electronically Limited)",
-        "weight": "432 lbs (Curb)",
-        "drag_coefficient": 0.31,
-        "downforce": "81 lbs @ 186 mph"
-      },
-      "interactions": {
-        "lights": ["headlight", "taillight"]
-      },
-      "availableColors": [
-        {"name": "Ducati Red", "hex": "#da291c"}
-      ]
+        "engine": "3.8L Twin-Turbo V8 Hybrid",
+        "power": "903 hp @ 7,300 rpm",
+        "torque": "664 lb-ft @ 4,000 rpm",
+        "0_60": "2.7 seconds",
+        "top_speed": "217 mph",
+        "weight": "3,289 lbs",
+        "drag_coefficient": 0.34,
+        "downforce": "1,323 lbs @ 161 mph"
+      }
+    },
+    {
+      "id": "ferrari_f40",
+      "name": "Ferrari F40",
+      "type": "car",
+      "modelUrl": null,
+      "thumbnail": "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=600&q=80",
+      "specs": {
+        "engine": "2.9L Twin-Turbo V8",
+        "power": "471 hp @ 7,000 rpm",
+        "torque": "426 lb-ft @ 4,000 rpm",
+        "0_60": "4.2 seconds",
+        "top_speed": "201 mph",
+        "weight": "2,767 lbs",
+        "drag_coefficient": 0.34,
+        "downforce": "Low"
+      }
+    },
+    {
+      "id": "lamborghini_aventador",
+      "name": "Lamborghini Aventador SVJ",
+      "type": "car",
+      "modelUrl": null,
+      "thumbnail": "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=600&q=80",
+      "specs": {
+        "engine": "6.5L Naturally Aspirated V12",
+        "power": "759 hp @ 8,500 rpm",
+        "torque": "531 lb-ft @ 6,750 rpm",
+        "0_60": "2.8 seconds",
+        "top_speed": "217 mph",
+        "weight": "3,362 lbs",
+        "drag_coefficient": 0.30,
+        "downforce": "High (ALA 2.0 System)"
+      }
+    },
+    {
+      "id": "audi_r8",
+      "name": "Audi R8 V10 Performance",
+      "type": "car",
+      "modelUrl": null,
+      "thumbnail": "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=600&q=80",
+      "specs": {
+        "engine": "5.2L Naturally Aspirated V10",
+        "power": "602 hp @ 8,100 rpm",
+        "torque": "413 lb-ft @ 6,400 rpm",
+        "0_60": "3.2 seconds",
+        "top_speed": "205 mph",
+        "weight": "3,594 lbs",
+        "drag_coefficient": 0.36,
+        "downforce": "220 lbs @ 205 mph"
+      }
     }
   ]
 }
