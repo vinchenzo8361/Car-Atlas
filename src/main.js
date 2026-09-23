@@ -5,12 +5,8 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import gsap from 'gsap';
 
-// =======================
-// THREE.JS SETUP
-// =======================
 const canvas = document.querySelector('#webgl-canvas');
 const scene = new THREE.Scene();
-
 let isLightMode = false;
 scene.background = new THREE.Color('#050505');
 
@@ -30,92 +26,101 @@ controls.minDistance = 2;
 
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
-const spotLight = new THREE.SpotLight(0xffffff, 200);
-spotLight.position.set(0, 10, 0);
-spotLight.angle = Math.PI / 4;
-spotLight.penumbra = 0.5;
-scene.add(spotLight);
 
 // =======================
-// AEROLAB STREAMLINES
+// AEROLAB TUBE STREAMLINES (Visible from all angles)
 // =======================
-let windLines = null;
+let windInstanced = null;
 let isAeroLab = false;
-const lineCount = 150; // MORE LINES!
-const segments = 100;  // LONGER LINES!
+let isThermal = false;
+const windCount = 400; 
 
 function createAeroLab() {
-  const geometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(lineCount * segments * 3);
+  // Use a box geometry instead of a line so it has 3D volume visible from any angle!
+  const geometry = new THREE.BoxGeometry(0.02, 0.02, 1.5);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
   
-  // Initialize lines far ahead of the car
-  for (let i = 0; i < lineCount; i++) {
-    const startX = (Math.random() - 0.5) * 4;
-    const startY = Math.random() * 2.0 + 0.1;
-    for (let j = 0; j < segments; j++) {
-      const idx = (i * segments + j) * 3;
-      positions[idx] = startX;
-      positions[idx + 1] = startY;
-      positions[idx + 2] = 20 + (j * 0.4); // Very long spacing
-    }
+  windInstanced = new THREE.InstancedMesh(geometry, material, windCount);
+  const dummy = new THREE.Object3D();
+  const vels = new Float32Array(windCount);
+  
+  for (let i = 0; i < windCount; i++) {
+    dummy.position.set((Math.random() - 0.5) * 4, Math.random() * 2.0 + 0.1, 10 + Math.random() * 10);
+    dummy.updateMatrix();
+    windInstanced.setMatrixAt(i, dummy.matrix);
+    vels[i] = Math.random() * 0.2 + 0.8;
   }
-
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const material = new THREE.LineBasicMaterial({
-    color: 0x00ffff,
-    transparent: true,
-    opacity: 0.3,
-    blending: THREE.AdditiveBlending
-  });
-
-  windLines = new THREE.LineSegments(geometry, material);
-  windLines.visible = false;
-  scene.add(windLines);
+  windInstanced.userData.velocities = vels;
+  windInstanced.visible = false;
+  scene.add(windInstanced);
 }
 createAeroLab();
 
 // =======================
-// STATE & APP LOGIC
+// THERMAL DRAG SHADER
+// =======================
+const thermalMaterial = new THREE.ShaderMaterial({
+  vertexShader: `
+    varying vec3 vNormal;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vNormal;
+    void main() {
+      float z = vNormal.z; 
+      vec3 color = vec3(0.0, 1.0, 0.0); // Default Green (parallel)
+      if (z > 0.0) {
+        color = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 0.0, 0.0), z); // Front -> Red (High Drag)
+      } else {
+        color = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 0.5, 0.0), -z); // Rear -> Orange (Wake)
+      }
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `
+});
+
+// =======================
+// APP LOGIC
 // =======================
 let appState = {
-  vehicles: [],
-  brands: [],
-  currentVehicle: null,
-  currentModel: null
+  vehicles: [], brands: [], currentVehicle: null, currentModel: null, garage: []
 };
+
+// Fallback Image Loader
+function loadFallbackImage(imgElement, urls) {
+  let index = 0;
+  imgElement.onerror = function() {
+    index++;
+    if (index < urls.length) imgElement.src = urls[index];
+    else imgElement.src = 'https://images.unsplash.com/photo-1503376712351-1f22f646b9a8?w=600&q=80'; // Final absolute fallback
+  };
+  imgElement.src = urls[0];
+}
 
 const loadingManager = new THREE.LoadingManager();
-const progressBar = document.getElementById('progress-bar');
-const loadingScreen = document.getElementById('loading-screen');
-
-loadingManager.onProgress = function(url, itemsLoaded, itemsTotal) {
-  progressBar.style.width = (itemsLoaded / itemsTotal * 100) + '%';
-};
-loadingManager.onLoad = function() {
-  setTimeout(() => loadingScreen.classList.add('hidden'), 500);
-};
-loadingManager.onError = function(url) {
-  console.warn("Failed to load model:", url);
-  document.getElementById('loading-text').textContent = "Model File Not Found! Please download it.";
-  setTimeout(() => loadingScreen.classList.add('hidden'), 3000);
-};
+loadingManager.onProgress = (u, i, t) => document.getElementById('progress-bar').style.width = (i / t * 100) + '%';
+loadingManager.onLoad = () => setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 500);
+loadingManager.onError = () => { document.getElementById('loading-text').textContent = "Model Missing (Add to public folder)"; setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 3000); };
 
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
-const gltfLoader = new GLTFLoader(loadingManager);
-gltfLoader.setDRACOLoader(dracoLoader);
+const gltfLoader = new GLTFLoader(loadingManager).setDRACOLoader(dracoLoader);
 
 async function init() {
+  const saved = localStorage.getItem('carAtlasGarage');
+  if (saved) {
+    appState.garage = JSON.parse(saved);
+    document.getElementById('garage-count').textContent = `(${appState.garage.length})`;
+  }
   const response = await fetch('/data/cars.json');
   const data = await response.json();
   appState.vehicles = data.vehicles;
-  
-  // Extract unique brands
   appState.brands = [...new Set(appState.vehicles.map(v => v.brand))];
-  
   populateBrandGrid();
   setupNav();
 }
@@ -124,216 +129,198 @@ function populateBrandGrid() {
   const grid = document.getElementById('brand-grid');
   grid.innerHTML = '';
   appState.brands.forEach(brand => {
-    const card = document.createElement('div');
-    card.className = 'brand-card';
-    card.innerHTML = `<h3>${brand}</h3>`;
-    card.onclick = () => showVehiclesForBrand(brand);
+    const card = document.createElement('div'); card.className = 'brand-card'; card.innerHTML = `<h3>${brand}</h3>`;
+    card.onclick = () => showVehicles(appState.vehicles.filter(v => v.brand === brand), `${brand} Models`);
     grid.appendChild(card);
   });
 }
 
-function showVehiclesForBrand(brand) {
+function showVehicles(vehicles, title, isGarage = false) {
   document.getElementById('brand-overlay').classList.add('hidden');
-  const selectionOverlay = document.getElementById('selection-overlay');
-  selectionOverlay.classList.remove('hidden');
-  document.getElementById('brand-title').textContent = `${brand} Models`;
+  document.getElementById('garage-overlay').classList.add('hidden');
+  const overlay = document.getElementById('selection-overlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('brand-title').textContent = title;
   
   const grid = document.getElementById('vehicle-grid');
   grid.innerHTML = '';
-  
-  const filteredVehicles = appState.vehicles.filter(v => v.brand === brand);
-  
-  filteredVehicles.forEach(vehicle => {
-    const card = document.createElement('div');
-    card.className = 'car-card';
+  if (vehicles.length === 0) {
+    grid.innerHTML = '<p>No cars found.</p>'; return;
+  }
+  vehicles.forEach(vehicle => {
+    const card = document.createElement('div'); card.className = 'car-card';
     card.innerHTML = `
-      <img src="${vehicle.thumbnail}" alt="${vehicle.name}">
-      <div class="card-info">
-        <h3>${vehicle.name}</h3>
-        <p>${vehicle.specs.power} | ${vehicle.specs.top_speed}</p>
-      </div>
+      <img src="" id="img-${vehicle.id}" alt="${vehicle.name}">
+      <div class="card-info"><h3>${vehicle.name}</h3><p>${vehicle.specs.power}</p></div>
     `;
     card.onclick = () => loadVehicle(vehicle);
     grid.appendChild(card);
+    setTimeout(() => loadFallbackImage(document.getElementById(`img-${vehicle.id}`), vehicle.thumbnails), 0);
   });
 }
 
+function showGarage() {
+  resetShowroom();
+  document.getElementById('brand-overlay').classList.add('hidden');
+  document.getElementById('specs-sidebar').classList.add('hidden');
+  const savedCars = appState.vehicles.filter(v => appState.garage.includes(v.id));
+  showVehicles(savedCars, "My Garage", true);
+}
+
+function toggleHeart() {
+  const v = appState.currentVehicle;
+  if (!v) return;
+  const idx = appState.garage.indexOf(v.id);
+  if (idx > -1) {
+    appState.garage.splice(idx, 1);
+    document.getElementById('btn-heart').classList.remove('saved');
+    document.getElementById('btn-heart').textContent = '🤍';
+  } else {
+    appState.garage.push(v.id);
+    document.getElementById('btn-heart').classList.add('saved');
+    document.getElementById('btn-heart').textContent = '❤️';
+  }
+  localStorage.setItem('carAtlasGarage', JSON.stringify(appState.garage));
+  document.getElementById('garage-count').textContent = `(${appState.garage.length})`;
+}
+
 window.changeCarColor = function(hexColor) {
-  if (!appState.currentModel) return;
-  appState.currentModel.traverse((child) => {
-    if (child.userData.isCarPaint) {
-      gsap.to(child.material.color, {
-        r: new THREE.Color(hexColor).r,
-        g: new THREE.Color(hexColor).g,
-        b: new THREE.Color(hexColor).b,
-        duration: 0.5
-      });
-    }
+  if (!appState.currentModel || isThermal) return;
+  appState.currentModel.traverse((c) => {
+    if (c.userData.isCarPaint) gsap.to(c.material.color, { r: new THREE.Color(hexColor).r, g: new THREE.Color(hexColor).g, b: new THREE.Color(hexColor).b, duration: 0.5 });
   });
 };
 
 function loadVehicle(vehicle) {
-  // Fix the Aero bug: always disable aero when loading a car
   resetShowroom();
-
   document.getElementById('selection-overlay').classList.add('hidden');
   document.getElementById('specs-sidebar').classList.remove('hidden');
   document.getElementById('current-car-name').textContent = vehicle.name;
   
-  if (appState.currentModel) {
-    scene.remove(appState.currentModel);
-    appState.currentModel = null;
-  }
+  const heartBtn = document.getElementById('btn-heart');
+  if (appState.garage.includes(vehicle.id)) { heartBtn.classList.add('saved'); heartBtn.textContent = '❤️'; }
+  else { heartBtn.classList.remove('saved'); heartBtn.textContent = '🤍'; }
+  heartBtn.onclick = toggleHeart;
+
+  if (appState.currentModel) { scene.remove(appState.currentModel); appState.currentModel = null; }
   appState.currentVehicle = vehicle;
   
-  const specsContent = document.getElementById('specs-content');
   let specsHTML = '';
   for (const [key, value] of Object.entries(vehicle.specs)) {
-    specsHTML += `
-      <div class="spec-row">
-        <span class="spec-label">${key.replace('_', ' ').toUpperCase()}</span>
-        <span class="spec-value">${value}</span>
-      </div>
-    `;
+    specsHTML += `<div class="spec-row"><span class="spec-label">${key.replace('_', ' ').toUpperCase()}</span><span class="spec-value">${value}</span></div>`;
   }
-  specsContent.innerHTML = specsHTML;
+  document.getElementById('specs-content').innerHTML = specsHTML;
   document.getElementById('interactions').classList.remove('hidden');
 
   if (vehicle.modelUrl) {
-    loadingScreen.classList.remove('hidden');
+    document.getElementById('loading-screen').classList.remove('hidden');
     document.getElementById('loading-text').textContent = `Loading ${vehicle.name}...`;
-    progressBar.style.width = '0%';
+    document.getElementById('progress-bar').style.width = '0%';
     
-    gltfLoader.load(
-      vehicle.modelUrl,
-      (gltf) => {
-        appState.currentModel = gltf.scene;
-        const box = new THREE.Box3().setFromObject(gltf.scene);
-        const center = box.getCenter(new THREE.Vector3());
-        gltf.scene.position.sub(center);
-        gltf.scene.position.y += Math.abs(box.min.y); 
-        
-        gltf.scene.traverse((child) => {
-          if (child.isMesh && child.material) {
-            child.material.needsUpdate = true;
-            if (child.name.toLowerCase().includes('body') || child.name.toLowerCase().includes('paint')) {
-               child.userData.isCarPaint = true;
-               child.material = new THREE.MeshPhysicalMaterial({
-                  color: child.material.color,
-                  metalness: 0.8,
-                  roughness: 0.2,
-                  clearcoat: 1.0,
-                  clearcoatRoughness: 0.05
-               });
-            }
+    gltfLoader.load(vehicle.modelUrl, (gltf) => {
+      appState.currentModel = gltf.scene;
+      const box = new THREE.Box3().setFromObject(gltf.scene);
+      const center = box.getCenter(new THREE.Vector3());
+      gltf.scene.position.sub(center);
+      gltf.scene.position.y += Math.abs(box.min.y); 
+      gltf.scene.traverse((c) => {
+        if (c.isMesh && c.material) {
+          c.material.needsUpdate = true;
+          if (c.name.toLowerCase().includes('body') || c.name.toLowerCase().includes('paint')) {
+             c.userData.isCarPaint = true;
+             c.userData.originalMat = new THREE.MeshPhysicalMaterial({ color: c.material.color, metalness: 0.8, roughness: 0.2, clearcoat: 1.0, clearcoatRoughness: 0.05 });
+             c.material = c.userData.originalMat;
+          } else {
+             c.userData.originalMat = c.material;
           }
-        });
-        scene.add(gltf.scene);
-        gsap.from(camera.position, { duration: 2, x: 8, y: 3, z: 8, ease: 'power3.out' });
-      },
-      undefined,
-      (error) => {
-        console.error(error);
-      }
-    );
+        }
+      });
+      scene.add(gltf.scene);
+      gsap.from(camera.position, { duration: 2, x: 8, y: 3, z: 8, ease: 'power3.out' });
+    });
   }
 }
 
+// TV Camera controls for Aero
+window.setAeroCamera = function(pos) {
+  if (pos === 'top') gsap.to(camera.position, { x: 0, y: 12, z: 0.1, duration: 1.5 });
+  if (pos === 'bottom') gsap.to(camera.position, { x: 0, y: -2, z: 0.1, duration: 1.5 });
+  if (pos === 'left') gsap.to(camera.position, { x: -10, y: 1, z: 0, duration: 1.5 });
+  if (pos === 'right') gsap.to(camera.position, { x: 10, y: 1, z: 0, duration: 1.5 });
+  if (pos === 'front') gsap.to(camera.position, { x: 0, y: 1.5, z: 12, duration: 1.5 });
+  if (pos === 'back') gsap.to(camera.position, { x: 0, y: 1.5, z: -12, duration: 1.5 });
+  if (pos === 'isometric') gsap.to(camera.position, { x: 8, y: 4, z: 8, duration: 1.5 });
+};
+
 function resetShowroom() {
-  isAeroLab = false;
-  windLines.visible = false;
-  document.getElementById('aero-controls').classList.add('hidden');
+  isAeroLab = false; isThermal = false;
+  windInstanced.visible = false;
+  controls.enabled = true; // Re-enable rotation
+  document.getElementById('aero-tv-overlay').classList.add('hidden');
+  document.getElementById('top-bar') && document.getElementById('top-bar').classList.remove('hidden');
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('btn-showroom').classList.add('active');
   scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#050505');
+  
+  if (appState.currentModel) {
+    appState.currentModel.traverse((c) => { if (c.isMesh && c.userData.originalMat) c.material = c.userData.originalMat; });
+  }
 }
 
 function setupNav() {
-  document.getElementById('btn-change-car').onclick = () => {
-    resetShowroom();
-    document.getElementById('specs-sidebar').classList.add('hidden');
-    document.getElementById('brand-overlay').classList.remove('hidden'); // Return to brand select
-  };
-
-  document.getElementById('btn-back-brands').onclick = () => {
-    document.getElementById('selection-overlay').classList.add('hidden');
-    document.getElementById('brand-overlay').classList.remove('hidden');
-  };
-
-  document.getElementById('btn-showroom').onclick = (e) => {
-    resetShowroom();
-    e.target.classList.add('active');
-    gsap.to(camera.position, { x: 6, y: 2, z: 8, duration: 1.5 });
-  };
-
+  document.getElementById('btn-change-car').onclick = () => { resetShowroom(); document.getElementById('specs-sidebar').classList.add('hidden'); document.getElementById('brand-overlay').classList.remove('hidden'); };
+  document.getElementById('btn-back-brands').onclick = () => { document.getElementById('selection-overlay').classList.add('hidden'); document.getElementById('brand-overlay').classList.remove('hidden'); };
+  document.getElementById('btn-garage').onclick = showGarage;
+  document.getElementById('btn-showroom').onclick = (e) => { resetShowroom(); e.target.classList.add('active'); gsap.to(camera.position, { x: 6, y: 2, z: 8, duration: 1.5 }); };
+  
   document.getElementById('btn-aero').onclick = (e) => {
-    isAeroLab = true;
-    windLines.visible = true;
-    document.getElementById('aero-controls').classList.remove('hidden');
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    scene.background = new THREE.Color('#000510');
-    gsap.to(camera.position, { x: 10, y: 3, z: 12, duration: 1.5 });
+    isAeroLab = true; windInstanced.visible = true; controls.enabled = false; // TV Mode
+    document.getElementById('aero-tv-overlay').classList.remove('hidden');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); e.target.classList.add('active');
+    scene.background = new THREE.Color('#00030a');
+    setAeroCamera('isometric');
+  };
+  document.getElementById('btn-exit-aero').onclick = resetShowroom;
+  
+  document.getElementById('btn-thermal').onclick = (e) => {
+    isThermal = !isThermal;
+    if (appState.currentModel) {
+      appState.currentModel.traverse((c) => {
+        if (c.isMesh && c.userData.originalMat) {
+           c.material = isThermal ? thermalMaterial : c.userData.originalMat;
+        }
+      });
+    }
   };
 
   document.getElementById('btn-theme-toggle').onclick = () => {
-    isLightMode = !isLightMode;
-    document.body.classList.toggle('light-mode');
-    if (!isAeroLab) {
-      scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#050505');
-    }
+    isLightMode = !isLightMode; document.body.classList.toggle('light-mode');
+    if (!isAeroLab) scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#050505');
   };
 }
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 
 const clock = new THREE.Clock();
+const dummy = new THREE.Object3D();
 function animate() {
-  // Update Aero lines (Continuous Streamlines)
-  if (isAeroLab && windLines) {
-    const windSpeedSlider = document.getElementById('wind-speed').value;
-    const speedMult = windSpeedSlider / 50;
-    const positions = windLines.geometry.attributes.position.array;
-    
-    for (let i = 0; i < lineCount; i++) {
-      for (let j = 0; j < segments; j++) {
-        const idx = (i * segments + j) * 3;
-        positions[idx + 2] -= 1.0 * speedMult; // Faster movement
-        
-        // Arch over the car's bounding box
-        if (positions[idx + 2] > -3 && positions[idx + 2] < 3) {
-          if (positions[idx + 1] < 1.8) {
-            positions[idx + 1] += 0.03 * speedMult; // Lift up
-          }
-        } else if (positions[idx + 2] < -3 && positions[idx + 1] > 0.1) {
-          positions[idx + 1] -= 0.02 * speedMult; // Settle back down
-        }
-      }
+  if (isAeroLab && windInstanced) {
+    const spd = document.getElementById('wind-speed').value / 50;
+    const vels = windInstanced.userData.velocities;
+    for (let i = 0; i < windCount; i++) {
+      windInstanced.getMatrixAt(i, dummy.matrix);
+      dummy.position.setFromMatrixPosition(dummy.matrix);
       
-      // If the tail passes, reset line far ahead
-      const headIdx = (i * segments) * 3;
-      if (positions[headIdx + 2] < -15) {
-        const startX = (Math.random() - 0.5) * 4;
-        const startY = Math.random() * 2.0 + 0.1;
-        for (let j = 0; j < segments; j++) {
-          const idx = (i * segments + j) * 3;
-          positions[idx] = startX;
-          positions[idx + 1] = startY;
-          positions[idx + 2] = 20 + (j * 0.4);
-        }
-      }
-    }
-    windLines.geometry.attributes.position.needsUpdate = true;
-  }
-  
-  controls.update();
-  renderer.render(scene, camera);
-  window.requestAnimationFrame(animate);
-}
+      dummy.position.z -= vels[i] * spd;
+      if (dummy.position.z > -3 && dummy.position.z < 3 && dummy.position.y < 1.8) dummy.position.y += 0.05 * spd;
+      else if (dummy.position.z < -3 && dummy.position.y > 0.1) dummy.position.y -= 0.03 * spd;
 
-animate();
-init();
+      if (dummy.position.z < -10) { dummy.position.set((Math.random() - 0.5) * 4, Math.random() * 2.0 + 0.1, 10 + Math.random() * 5); }
+      dummy.updateMatrix();
+      windInstanced.setMatrixAt(i, dummy.matrix);
+    }
+    windInstanced.instanceMatrix.needsUpdate = true;
+  }
+  controls.update(); renderer.render(scene, camera); window.requestAnimationFrame(animate);
+}
+animate(); init();

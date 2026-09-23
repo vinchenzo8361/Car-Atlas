@@ -7,51 +7,51 @@
     <link rel="stylesheet" href="/src/style.css">
   </head>
   <body>
-    <!-- 3D Canvas -->
     <canvas id="webgl-canvas"></canvas>
 
-    <!-- UI Layer -->
     <main id="ui-layer">
-      
       <header class="glass-panel top-bar">
         <h1>CarAtlas</h1>
         <nav>
           <button id="btn-showroom" class="active">Showroom</button>
           <button id="btn-aero">Aero Lab</button>
-          <button id="btn-garage">My Garage</button>
+          <button id="btn-garage">My Garage <span id="garage-count">(0)</span></button>
           <button id="btn-theme-toggle" title="Toggle Light/Dark Mode">🌓</button>
         </nav>
       </header>
 
-      <!-- Brand Selection Overlay -->
       <div id="brand-overlay" class="glass-panel centered-overlay">
         <h2>Select a Brand</h2>
-        <div class="card-grid" id="brand-grid">
-          <!-- Populated by JS -->
-        </div>
+        <div class="card-grid" id="brand-grid"></div>
       </div>
 
-      <!-- Vehicle Selection Overlay -->
       <div id="selection-overlay" class="glass-panel centered-overlay hidden">
         <div class="overlay-header">
           <button id="btn-back-brands" class="text-btn">← Back to Brands</button>
           <h2 id="brand-title">Select a Vehicle</h2>
         </div>
-        <div class="card-grid" id="vehicle-grid">
-          <!-- Populated by JS -->
+        <div class="card-grid" id="vehicle-grid"></div>
+      </div>
+
+      <div id="garage-overlay" class="glass-panel centered-overlay hidden">
+        <div class="overlay-header">
+          <button id="btn-garage-back" class="text-btn">← Back to Showroom</button>
+          <h2>My Garage</h2>
+        </div>
+        <div class="card-grid" id="garage-grid">
+           <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- Specs Sidebar (Hidden initially) -->
       <div id="specs-sidebar" class="sidebar glass-panel right-panel hidden">
         <div class="sidebar-header">
-          <h2 id="current-car-name">Vehicle Name</h2>
+          <div class="title-with-heart">
+            <h2 id="current-car-name">Vehicle Name</h2>
+            <button id="btn-heart" class="icon-btn heart-btn">🤍</button>
+          </div>
           <button id="btn-change-car" class="icon-btn" title="Back to Selection">✕</button>
         </div>
-        
-        <div id="specs-content">
-          <!-- Populated by JS -->
-        </div>
+        <div id="specs-content"></div>
         
         <div id="interactions" class="hidden">
           <h3>Colors</h3>
@@ -63,11 +63,29 @@
             <div class="color-swatch" style="background: #0055ff;" onclick="changeCarColor('#0055ff')"></div>
           </div>
         </div>
+      </div>
 
-        <div id="aero-controls" class="hidden">
-          <h3>Wind Tunnel Controls</h3>
-          <input type="range" id="wind-speed" min="1" max="100" value="50" class="slider">
-          <label for="wind-speed">Wind Speed</label>
+      <!-- TV Screen Aero Controls overlay -->
+      <div id="aero-tv-overlay" class="tv-overlay hidden">
+        <div class="tv-header glass-panel">
+          <h2>Wind Tunnel Diagnostic</h2>
+          <button id="btn-exit-aero" class="text-btn exit-btn">Exit Test</button>
+        </div>
+        <div class="tv-controls glass-panel">
+          <div class="camera-buttons">
+            <button onclick="setAeroCamera('top')">Top</button>
+            <button onclick="setAeroCamera('bottom')">Bottom</button>
+            <button onclick="setAeroCamera('left')">Left</button>
+            <button onclick="setAeroCamera('right')">Right</button>
+            <button onclick="setAeroCamera('front')">Front</button>
+            <button onclick="setAeroCamera('back')">Back</button>
+            <button onclick="setAeroCamera('isometric')">Isometric</button>
+          </div>
+          <div class="slider-group">
+            <label for="wind-speed">Wind Velocity</label>
+            <input type="range" id="wind-speed" min="1" max="100" value="50" class="slider">
+          </div>
+          <button id="btn-thermal" class="action-btn">🔍 Show Drag Heatmap</button>
         </div>
       </div>
 
@@ -79,7 +97,6 @@
         <div id="progress-bar"></div>
       </div>
     </div>
-
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
