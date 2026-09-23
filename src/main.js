@@ -30,7 +30,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
 
 // =======================
-// AEROLAB TUBE STREAMLINES (Visible from all angles)
+// AEROLAB TUBE STREAMLINES
 // =======================
 let windInstanced = null;
 let isAeroLab = false;
@@ -38,7 +38,6 @@ let isThermal = false;
 const windCount = 400; 
 
 function createAeroLab() {
-  // Use a box geometry instead of a line so it has 3D volume visible from any angle!
   const geometry = new THREE.BoxGeometry(0.02, 0.02, 1.5);
   const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
   
@@ -73,11 +72,11 @@ const thermalMaterial = new THREE.ShaderMaterial({
     varying vec3 vNormal;
     void main() {
       float z = vNormal.z; 
-      vec3 color = vec3(0.0, 1.0, 0.0); // Default Green (parallel)
+      vec3 color = vec3(0.0, 1.0, 0.0);
       if (z > 0.0) {
-        color = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 0.0, 0.0), z); // Front -> Red (High Drag)
+        color = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 0.0, 0.0), z);
       } else {
-        color = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 0.5, 0.0), -z); // Rear -> Orange (Wake)
+        color = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 0.5, 0.0), -z);
       }
       gl_FragColor = vec4(color, 1.0);
     }
@@ -88,41 +87,54 @@ const thermalMaterial = new THREE.ShaderMaterial({
 // APP LOGIC
 // =======================
 let appState = {
-  vehicles: [], brands: [], currentVehicle: null, currentModel: null, garage: []
+  vehicles: [], brands: [], currentVehicle: null, currentModel: null, garage: [], mode: 'showroom'
 };
 
-// Fallback Image Loader
-function loadFallbackImage(imgElement, urls) {
+const logoMap = {
+  "Porsche": "https://cdn.simpleicons.org/porsche/white",
+  "McLaren": "https://cdn.simpleicons.org/mclaren/white",
+  "Ferrari": "https://cdn.simpleicons.org/ferrari/white",
+  "Lamborghini": "https://cdn.simpleicons.org/lamborghini/white",
+  "Audi": "https://cdn.simpleicons.org/audi/white",
+  "Bugatti": "https://cdn.simpleicons.org/bugatti/white",
+  "Nissan": "https://cdn.simpleicons.org/nissan/white",
+  "BMW": "https://cdn.simpleicons.org/bmw/white",
+  "Mercedes": "https://cdn.simpleicons.org/mercedes/white",
+  "Aston Martin": "https://cdn.simpleicons.org/astonmartin/white",
+  "Chevrolet": "https://cdn.simpleicons.org/chevrolet/white",
+  "Toyota": "https://cdn.simpleicons.org/toyota/white"
+};
+
+// Fallback Image Loader (Replaces image with CSS box if all fail)
+function loadFallbackImage(imgElement, urls, fallbackText) {
+  if (!urls || urls.length === 0) return createFallbackDiv(imgElement, fallbackText);
   let index = 0;
   imgElement.onerror = function() {
     index++;
-    if (index < urls.length) imgElement.src = urls[index];
-    else imgElement.src = 'https://images.unsplash.com/photo-1503376712351-1f22f646b9a8?w=600&q=80'; // Final absolute fallback
+    if (index < urls.length) {
+      imgElement.src = urls[index];
+    } else {
+      createFallbackDiv(imgElement, fallbackText);
+    }
   };
   imgElement.src = urls[0];
+}
+
+function createFallbackDiv(imgElement, text) {
+  const fallback = document.createElement('div');
+  fallback.className = 'fallback-img';
+  fallback.textContent = text + ' Image Unavailable';
+  if(imgElement.parentNode) imgElement.parentNode.replaceChild(fallback, imgElement);
 }
 
 const loadingManager = new THREE.LoadingManager();
 loadingManager.onProgress = (u, i, t) => document.getElementById('progress-bar').style.width = (i / t * 100) + '%';
 loadingManager.onLoad = () => setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 500);
-loadingManager.onError = () => { document.getElementById('loading-text').textContent = "Model Missing (Add to public folder)"; setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 3000); };
+loadingManager.onError = () => { document.getElementById('loading-text').textContent = "Model Missing"; setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 3000); };
 
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
 const gltfLoader = new GLTFLoader(loadingManager).setDRACOLoader(dracoLoader);
-
-const domainMap = {
-  "Porsche": "porsche.com",
-  "McLaren": "mclaren.com",
-  "Ferrari": "ferrari.com",
-  "Lamborghini": "lamborghini.com",
-  "Audi": "audi.com",
-  "Bugatti": "bugatti.com",
-  "Koenigsegg": "koenigsegg.com",
-  "Nissan": "nissanusa.com",
-  "BMW": "bmw.com",
-  "Mercedes": "mercedes-benz.com"
-};
 
 async function init() {
   const saved = localStorage.getItem('carAtlasGarage');
@@ -144,8 +156,8 @@ function populateBrandGrid() {
   appState.brands.forEach(brand => {
     const card = document.createElement('div'); card.className = 'brand-card';
     let logoHTML = '';
-    if (domainMap[brand]) {
-      logoHTML = `<img src="https://logo.clearbit.com/${domainMap[brand]}" alt="${brand} logo" class="brand-logo" onerror="this.style.display='none'">`;
+    if (logoMap[brand]) {
+      logoHTML = `<img src="${logoMap[brand]}" alt="${brand}" class="brand-logo" onerror="this.style.display='none'">`;
     }
     card.innerHTML = `${logoHTML} <h3>${brand}</h3>`;
     card.onclick = () => showVehicles(appState.vehicles.filter(v => v.brand === brand), `${brand} Models`);
@@ -153,11 +165,11 @@ function populateBrandGrid() {
   });
 }
 
-function showVehicles(vehicles, title, isGarage = false) {
+function showVehicles(vehicles, title) {
+  removeCurrentCar(); // Ensure no car is hanging in the background
   document.getElementById('brand-overlay').classList.add('hidden');
   document.getElementById('garage-overlay').classList.add('hidden');
-  const overlay = document.getElementById('selection-overlay');
-  overlay.classList.remove('hidden');
+  document.getElementById('selection-overlay').classList.remove('hidden');
   document.getElementById('brand-title').textContent = title;
   
   const grid = document.getElementById('vehicle-grid');
@@ -173,23 +185,24 @@ function showVehicles(vehicles, title, isGarage = false) {
     `;
     card.onclick = () => loadVehicle(vehicle);
     grid.appendChild(card);
-    setTimeout(() => loadFallbackImage(document.getElementById(`img-${vehicle.id}`), vehicle.thumbnails), 0);
+    setTimeout(() => loadFallbackImage(document.getElementById(`img-${vehicle.id}`), vehicle.thumbnails, vehicle.name), 0);
   });
 }
 
 function showGarage() {
   resetShowroom();
+  removeCurrentCar();
   document.getElementById('brand-overlay').classList.add('hidden');
   document.getElementById('specs-sidebar').classList.add('hidden');
   document.getElementById('selection-overlay').classList.add('hidden');
+  
   const savedCars = appState.vehicles.filter(v => appState.garage.includes(v.id));
   
-  // Show the garage overlay
   document.getElementById('garage-overlay').classList.remove('hidden');
   const grid = document.getElementById('garage-grid');
   grid.innerHTML = '';
   if (savedCars.length === 0) {
-    grid.innerHTML = '<p style="text-align:center; width:100%;">Your garage is empty. Go heart some cars!</p>';
+    grid.innerHTML = '<p style="text-align:center; width:100%;">Your garage is empty. Heart some cars to save them here!</p>';
     return;
   }
   savedCars.forEach(vehicle => {
@@ -200,8 +213,16 @@ function showGarage() {
     `;
     card.onclick = () => loadVehicle(vehicle);
     grid.appendChild(card);
-    setTimeout(() => loadFallbackImage(document.getElementById(`garage-img-${vehicle.id}`), vehicle.thumbnails), 0);
+    setTimeout(() => loadFallbackImage(document.getElementById(`garage-img-${vehicle.id}`), vehicle.thumbnails, vehicle.name), 0);
   });
+}
+
+function removeCurrentCar() {
+  if (appState.currentModel) {
+    scene.remove(appState.currentModel);
+    appState.currentModel = null;
+  }
+  appState.currentVehicle = null;
 }
 
 function toggleHeart() {
@@ -228,11 +249,27 @@ window.changeCarColor = function(hexColor) {
   });
 };
 
+function activateAeroModeLogic() {
+  isAeroLab = true; windInstanced.visible = true; controls.enabled = false; 
+  document.getElementById('aero-tv-overlay').classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); 
+  document.getElementById('btn-aero').classList.add('active');
+  scene.background = new THREE.Color('#00030a');
+  setAeroCamera('isometric');
+}
+
 function loadVehicle(vehicle) {
   resetShowroom();
+  removeCurrentCar();
   document.getElementById('selection-overlay').classList.add('hidden');
   document.getElementById('garage-overlay').classList.add('hidden');
-  document.getElementById('specs-sidebar').classList.remove('hidden');
+  document.getElementById('brand-overlay').classList.add('hidden');
+  
+  // Show sidebar only if not in Aero Mode intent
+  if (appState.mode !== 'aero') {
+    document.getElementById('specs-sidebar').classList.remove('hidden');
+  }
+
   document.getElementById('current-car-name').textContent = vehicle.name;
   
   const heartBtn = document.getElementById('btn-heart');
@@ -240,7 +277,6 @@ function loadVehicle(vehicle) {
   else { heartBtn.classList.remove('saved'); heartBtn.textContent = '🤍'; }
   heartBtn.onclick = toggleHeart;
 
-  if (appState.currentModel) { scene.remove(appState.currentModel); appState.currentModel = null; }
   appState.currentVehicle = vehicle;
   
   let specsHTML = '';
@@ -250,9 +286,20 @@ function loadVehicle(vehicle) {
   document.getElementById('specs-content').innerHTML = specsHTML;
   document.getElementById('interactions').classList.remove('hidden');
 
+  const finalizeLoad = (model) => {
+    appState.currentModel = model;
+    scene.add(model);
+    
+    // If the user's intent was to load into Aero Lab, trigger it immediately
+    if (appState.mode === 'aero') {
+      activateAeroModeLogic();
+    } else {
+      gsap.from(camera.position, { duration: 2, x: 8, y: 3, z: 8, ease: 'power3.out' });
+    }
+  };
+
   if (vehicle.modelUrl) {
     if (vehicle.modelUrl.startsWith('primitive:')) {
-      // Procedural Test Models
       const type = vehicle.modelUrl.split(':')[1];
       let geo;
       if (type === 'box') geo = new THREE.BoxGeometry(2, 1.5, 4);
@@ -265,10 +312,9 @@ function loadVehicle(vehicle) {
       mesh.userData.isCarPaint = true;
       mesh.userData.originalMat = mat;
       
-      appState.currentModel = new THREE.Group();
-      appState.currentModel.add(mesh);
-      scene.add(appState.currentModel);
-      gsap.from(camera.position, { duration: 2, x: 8, y: 3, z: 8, ease: 'power3.out' });
+      const group = new THREE.Group();
+      group.add(mesh);
+      finalizeLoad(group);
       return;
     }
 
@@ -277,7 +323,6 @@ function loadVehicle(vehicle) {
     document.getElementById('progress-bar').style.width = '0%';
     
     gltfLoader.load(vehicle.modelUrl, (gltf) => {
-      appState.currentModel = gltf.scene;
       const box = new THREE.Box3().setFromObject(gltf.scene);
       const center = box.getCenter(new THREE.Vector3());
       gltf.scene.position.sub(center);
@@ -294,8 +339,7 @@ function loadVehicle(vehicle) {
           }
         }
       });
-      scene.add(gltf.scene);
-      gsap.from(camera.position, { duration: 2, x: 8, y: 3, z: 8, ease: 'power3.out' });
+      finalizeLoad(gltf.scene);
     });
   }
 }
@@ -317,7 +361,6 @@ function resetShowroom() {
   controls.enabled = true; // Re-enable rotation
   document.getElementById('aero-tv-overlay').classList.add('hidden');
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('btn-showroom').classList.add('active');
   scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#050505');
   
   if (appState.currentModel) {
@@ -325,38 +368,59 @@ function resetShowroom() {
   }
 }
 
+function showBrandOverlayClean() {
+  resetShowroom();
+  removeCurrentCar(); // Fix: Clear 3D scene when on brand page
+  document.getElementById('specs-sidebar').classList.add('hidden');
+  document.getElementById('selection-overlay').classList.add('hidden');
+  document.getElementById('garage-overlay').classList.add('hidden');
+  document.getElementById('brand-overlay').classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(appState.mode === 'showroom' ? 'btn-showroom' : 'btn-aero').classList.add('active');
+}
+
 function setupNav() {
-  document.getElementById('btn-change-car').onclick = () => { resetShowroom(); document.getElementById('specs-sidebar').classList.add('hidden'); document.getElementById('brand-overlay').classList.remove('hidden'); };
-  document.getElementById('btn-back-brands').onclick = () => { document.getElementById('selection-overlay').classList.add('hidden'); document.getElementById('brand-overlay').classList.remove('hidden'); };
-  document.getElementById('btn-garage-back').onclick = () => { document.getElementById('garage-overlay').classList.add('hidden'); document.getElementById('brand-overlay').classList.remove('hidden'); };
+  document.getElementById('btn-change-car').onclick = showBrandOverlayClean;
+  document.getElementById('btn-back-brands').onclick = showBrandOverlayClean;
+  document.getElementById('btn-garage-back').onclick = showBrandOverlayClean;
+  
   document.getElementById('btn-garage').onclick = (e) => {
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); e.target.classList.add('active');
+    appState.mode = 'showroom';
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); 
+    e.target.classList.add('active');
     showGarage();
   };
   
   document.getElementById('btn-showroom').onclick = (e) => { 
+    appState.mode = 'showroom';
     if (appState.currentVehicle) {
-      resetShowroom(); e.target.classList.add('active'); gsap.to(camera.position, { x: 6, y: 2, z: 8, duration: 1.5 }); 
+      resetShowroom(); e.target.classList.add('active'); 
+      document.getElementById('specs-sidebar').classList.remove('hidden');
+      gsap.to(camera.position, { x: 6, y: 2, z: 8, duration: 1.5 }); 
     } else {
-      document.getElementById('garage-overlay').classList.add('hidden');
-      document.getElementById('selection-overlay').classList.add('hidden');
-      document.getElementById('brand-overlay').classList.remove('hidden');
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); e.target.classList.add('active');
+      showBrandOverlayClean();
     }
   };
   
   document.getElementById('btn-aero').onclick = (e) => {
-    if (!appState.currentModel) {
-      alert("Please select a car from the showroom first before entering the Aero Lab!");
-      return;
+    appState.mode = 'aero';
+    if (appState.currentModel) {
+       // If car is already loaded, jump straight into Aero
+       activateAeroModeLogic();
+       document.getElementById('specs-sidebar').classList.add('hidden');
+    } else {
+       // Show selection screen so user can pick a car for Aero
+       showBrandOverlayClean();
     }
-    isAeroLab = true; windInstanced.visible = true; controls.enabled = false; // TV Mode
-    document.getElementById('aero-tv-overlay').classList.remove('hidden');
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); e.target.classList.add('active');
-    scene.background = new THREE.Color('#00030a');
-    setAeroCamera('isometric');
   };
-  document.getElementById('btn-exit-aero').onclick = resetShowroom;
+  
+  document.getElementById('btn-exit-aero').onclick = (e) => {
+    appState.mode = 'showroom';
+    resetShowroom();
+    document.getElementById('btn-showroom').classList.add('active');
+    document.getElementById('specs-sidebar').classList.remove('hidden');
+    gsap.to(camera.position, { x: 6, y: 2, z: 8, duration: 1.5 });
+  };
   
   document.getElementById('btn-thermal').onclick = (e) => {
     isThermal = !isThermal;
