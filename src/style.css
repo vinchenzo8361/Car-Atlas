@@ -63,6 +63,7 @@ nav button:hover, nav button.active { color: var(--text-primary); }
   display: flex; flex-direction: column;
 }
 .brand-card { align-items: center; justify-content: center; padding: 3rem 1rem; }
+.brand-logo { width: 64px; height: 64px; object-fit: contain; margin-bottom: 1rem; }
 .brand-card h3 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
 .car-card:hover, .brand-card:hover { transform: translateY(-5px); background: rgba(100,100,100,0.2); }
 .car-card img { width: 100%; height: 180px; object-fit: cover; }
