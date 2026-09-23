@@ -10,21 +10,49 @@
     <canvas id="webgl-canvas"></canvas>
 
     <main id="ui-layer">
-      <header class="glass-panel top-bar">
+      <!-- Minimal Top Bar -->
+      <header class="glass-panel top-bar hidden" id="top-bar">
         <h1>CarAtlas</h1>
         <nav>
-          <button id="btn-showroom" class="active">Showroom</button>
-          <button id="btn-aero">Aero Lab</button>
-          <button id="btn-garage">My Garage <span id="garage-count">(0)</span></button>
+          <button id="btn-home" class="active">🏠 Main Menu</button>
           <button id="btn-theme-toggle" title="Toggle Light/Dark Mode">🌓</button>
         </nav>
       </header>
 
-      <div id="brand-overlay" class="glass-panel centered-overlay">
-        <h2>Select a Brand</h2>
+      <!-- 1. MAIN HOME MENU -->
+      <div id="home-menu" class="glass-panel centered-overlay">
+        <h2>Welcome to CarAtlas</h2>
+        <p style="text-align:center; color:#a0a0a0; margin-bottom: 2rem;">Select an experience to begin</p>
+        <div class="card-grid home-grid">
+          <div class="brand-card home-card" onclick="selectIntent('showroom')">
+            <h3 style="color:#00d2ff">✨ Showroom</h3>
+            <p>Explore & Customize</p>
+          </div>
+          <div class="brand-card home-card" onclick="selectIntent('aero')">
+            <h3 style="color:#ff4757">💨 Aero Lab</h3>
+            <p>Wind & Drag Analysis</p>
+          </div>
+          <div class="brand-card home-card" onclick="selectIntent('library')">
+            <h3 style="color:#2ed573">📚 Library</h3>
+            <p>Automotive Encyclopedia</p>
+          </div>
+          <div class="brand-card home-card" onclick="selectIntent('garage')">
+            <h3 style="color:#ffa502">❤️ My Garage <span id="garage-count">(0)</span></h3>
+            <p>Your Saved Collection</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. BRAND SELECTION -->
+      <div id="brand-overlay" class="glass-panel centered-overlay hidden">
+        <div class="overlay-header">
+          <button class="text-btn btn-go-home">← Back to Menu</button>
+          <h2>Select a Brand</h2>
+        </div>
         <div class="card-grid" id="brand-grid"></div>
       </div>
 
+      <!-- 3. VEHICLE SELECTION -->
       <div id="selection-overlay" class="glass-panel centered-overlay hidden">
         <div class="overlay-header">
           <button id="btn-back-brands" class="text-btn">← Back to Brands</button>
@@ -33,43 +61,60 @@
         <div class="card-grid" id="vehicle-grid"></div>
       </div>
 
+      <!-- 4. GARAGE OVERLAY -->
       <div id="garage-overlay" class="glass-panel centered-overlay hidden">
         <div class="overlay-header">
-          <button id="btn-garage-back" class="text-btn">← Back to Showroom</button>
+          <button class="text-btn btn-go-home">← Back to Menu</button>
           <h2>My Garage</h2>
         </div>
-        <div class="card-grid" id="garage-grid">
-           <!-- Populated by JS -->
+        <div class="card-grid" id="garage-grid"></div>
+      </div>
+
+      <!-- 5. LIBRARY ENCYCLOPEDIA OVERLAY -->
+      <div id="library-overlay" class="glass-panel centered-overlay hidden">
+        <div class="overlay-header">
+          <button id="btn-library-back" class="text-btn">← Back to Selection</button>
+          <h2 id="lib-car-name">Car Name</h2>
+        </div>
+        <div class="library-content" id="lib-content">
+          <!-- Populated by JS -->
         </div>
       </div>
 
+      <!-- 6. SHOWROOM SIDEBAR & CUSTOMIZER -->
       <div id="specs-sidebar" class="sidebar glass-panel right-panel hidden">
         <div class="sidebar-header">
           <div class="title-with-heart">
             <h2 id="current-car-name">Vehicle Name</h2>
             <button id="btn-heart" class="icon-btn heart-btn">🤍</button>
           </div>
-          <button id="btn-change-car" class="icon-btn" title="Back to Selection">✕</button>
         </div>
         <div id="specs-content"></div>
         
-        <div id="interactions" class="hidden">
-          <h3>Colors</h3>
-          <div id="color-picker">
-            <div class="color-swatch" style="background: #cc0000;" onclick="changeCarColor('#cc0000')"></div>
-            <div class="color-swatch" style="background: #c0c0c0;" onclick="changeCarColor('#c0c0c0')"></div>
-            <div class="color-swatch" style="background: #111111;" onclick="changeCarColor('#111111')"></div>
-            <div class="color-swatch" style="background: #ffffff;" onclick="changeCarColor('#ffffff')"></div>
-            <div class="color-swatch" style="background: #0055ff;" onclick="changeCarColor('#0055ff')"></div>
+        <!-- Advanced Configurator -->
+        <div id="interactions" class="configurator">
+          <h3>Paint Color</h3>
+          <div id="color-picker" class="swatch-container">
+            <div class="color-swatch" style="background: #cc0000;" onclick="changeMaterialColor('paint', '#cc0000')"></div>
+            <div class="color-swatch" style="background: #00cc55;" onclick="changeMaterialColor('paint', '#00cc55')"></div>
+            <div class="color-swatch" style="background: #111111;" onclick="changeMaterialColor('paint', '#111111')"></div>
+            <div class="color-swatch" style="background: #ffffff;" onclick="changeMaterialColor('paint', '#ffffff')"></div>
+            <div class="color-swatch" style="background: #0055ff;" onclick="changeMaterialColor('paint', '#0055ff')"></div>
+          </div>
+          <h3 style="margin-top: 1rem;">Caliper Color</h3>
+          <div class="swatch-container">
+            <div class="color-swatch" style="background: #ffaa00;" onclick="changeMaterialColor('caliper', '#ffaa00')"></div>
+            <div class="color-swatch" style="background: #cc0000;" onclick="changeMaterialColor('caliper', '#cc0000')"></div>
+            <div class="color-swatch" style="background: #111111;" onclick="changeMaterialColor('caliper', '#111111')"></div>
           </div>
         </div>
       </div>
 
-      <!-- TV Screen Aero Controls overlay -->
+      <!-- 7. AERO LAB TV SCREEN -->
       <div id="aero-tv-overlay" class="tv-overlay hidden">
         <div class="tv-header glass-panel">
           <h2>Wind Tunnel Diagnostic</h2>
-          <button id="btn-exit-aero" class="text-btn exit-btn">Exit Test</button>
+          <button class="text-btn exit-btn btn-go-home">Exit Test</button>
         </div>
         <div class="tv-controls glass-panel">
           <div class="camera-buttons">
