@@ -80,36 +80,38 @@ let appState = {
   intent: 'home' 
 };
 
-// Extremely robust hardcoded logo map
+// Extremely robust hardcoded logo map (WorldVectorLogo CDNs)
 const logoMap = {
-  "Porsche": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Porsche_logo.svg/1024px-Porsche_logo.svg.png",
-  "McLaren": "https://upload.wikimedia.org/wikipedia/en/thumb/3/30/McLaren_Racing_logo.svg/1024px-McLaren_Racing_logo.svg.png",
-  "Ferrari": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d1/Ferrari-Logo.svg/1024px-Ferrari-Logo.svg.png",
-  "Lamborghini": "https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Lamborghini_Logo.svg/1024px-Lamborghini_Logo.svg.png",
-  "Audi": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/1024px-Audi-Logo_2016.svg.png",
-  "Bugatti": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Bugatti_logo.svg/1024px-Bugatti_logo.svg.png",
-  "Nissan": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Nissan_logo.png/1024px-Nissan_logo.png",
-  "BMW": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/BMW_logo_%28gray%29.svg/1024px-BMW_logo_%28gray%29.svg.png",
-  "Mercedes": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/1024px-Mercedes-Logo.svg.png",
-  "Koenigsegg": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Koenigsegg_logo.svg/1024px-Koenigsegg_logo.svg.png",
-  "Aston Martin": "https://upload.wikimedia.org/wikipedia/en/thumb/b/bc/Aston_Martin_logo.svg/1024px-Aston_Martin_logo.svg.png",
-  "Chevrolet": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Chevrolet_logo_2013.svg/1024px-Chevrolet_logo_2013.svg.png",
-  "Toyota": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/1024px-Toyota.svg.png",
-  "Dodge": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Dodge_logo.svg/1024px-Dodge_logo.svg.png"
+  "Porsche": "https://cdn.worldvectorlogo.com/logos/porsche-6.svg",
+  "McLaren": "https://cdn.worldvectorlogo.com/logos/mclaren-4.svg",
+  "Ferrari": "https://cdn.worldvectorlogo.com/logos/ferrari-ges.svg",
+  "Lamborghini": "https://cdn.worldvectorlogo.com/logos/lamborghini-1.svg",
+  "Audi": "https://cdn.worldvectorlogo.com/logos/audi-11.svg",
+  "Bugatti": "https://cdn.worldvectorlogo.com/logos/bugatti-logo.svg",
+  "Nissan": "https://cdn.worldvectorlogo.com/logos/nissan-6.svg",
+  "BMW": "https://cdn.worldvectorlogo.com/logos/bmw.svg",
+  "Mercedes": "https://cdn.worldvectorlogo.com/logos/mercedes-benz-9.svg",
+  "Koenigsegg": "https://cdn.worldvectorlogo.com/logos/koenigsegg.svg",
+  "Aston Martin": "https://cdn.worldvectorlogo.com/logos/aston-martin-1.svg",
+  "Chevrolet": "https://cdn.worldvectorlogo.com/logos/chevrolet-1.svg",
+  "Toyota": "https://cdn.worldvectorlogo.com/logos/toyota-4.svg",
+  "Dodge": "https://cdn.worldvectorlogo.com/logos/dodge-2.svg",
+  "Formula 1": "https://cdn.worldvectorlogo.com/logos/f1-2.svg"
 };
 
-// Using a local image if it exists, otherwise it will instantly trigger onerror
 const LOCAL_FALLBACK_IMG = "/images/fallback.jpg"; 
 
-function loadFallbackImage(imgElement, urls) {
-  const safeUrls = urls ? [...urls, LOCAL_FALLBACK_IMG] : [LOCAL_FALLBACK_IMG];
+function loadFallbackImage(imgElement, urls, vehicleName) {
+  // Generate 10 dynamic fallback query URLs for safety
+  const dynamicUrls = Array.from({length: 10}, (_, i) => `https://source.unsplash.com/600x400/?${encodeURIComponent(vehicleName)},supercar&sig=${i}`);
+  const safeUrls = urls ? [...urls, ...dynamicUrls, LOCAL_FALLBACK_IMG] : [...dynamicUrls, LOCAL_FALLBACK_IMG];
+  
   let index = 0;
   imgElement.onerror = function() {
     index++;
     if (index < safeUrls.length) {
       imgElement.src = safeUrls[index];
     } else {
-      // If absolutely everything fails, replace with CSS block
       const fallback = document.createElement('div');
       fallback.className = 'fallback-img';
       fallback.textContent = 'IMAGE UNAVAILABLE';
@@ -122,7 +124,6 @@ function loadFallbackImage(imgElement, urls) {
 const loadingManager = new THREE.LoadingManager();
 loadingManager.onProgress = (u, i, t) => document.getElementById('progress-bar').style.width = (i / t * 100) + '%';
 loadingManager.onLoad = () => setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 500);
-// Handle missing model perfectly!
 loadingManager.onError = () => { 
   document.getElementById('loading-screen').classList.add('hidden');
   document.getElementById('model-error-modal').classList.remove('hidden');
@@ -138,7 +139,11 @@ async function init() {
   const response = await fetch('/data/cars.json');
   const data = await response.json();
   appState.vehicles = data.vehicles;
-  appState.brands = [...new Set(appState.vehicles.filter(v => v.brand !== 'Test').map(v => v.brand)), 'Test'];
+  
+  // Create brand list. Ensure 'Test' is at the end, and 'Formula 1' is present.
+  let b = [...new Set(appState.vehicles.map(v => v.brand))];
+  appState.brands = b.filter(brand => brand !== 'Test');
+  appState.brands.push('Test');
   
   setupNav();
 }
@@ -159,7 +164,33 @@ window.selectIntent = function(intent) {
 function populateBrandGrid() {
   const grid = document.getElementById('brand-grid');
   grid.innerHTML = '';
-  appState.brands.forEach(brand => {
+  
+  // If library, hide 'Test'
+  const displayBrands = appState.intent === 'library' 
+    ? appState.brands.filter(b => b !== 'Test')
+    : appState.brands;
+
+  // For Library, let's inject a special "What is Aero Lab?" card
+  if (appState.intent === 'library') {
+    const aeroInfoCard = document.createElement('div');
+    aeroInfoCard.className = 'brand-card';
+    aeroInfoCard.innerHTML = `<h3 style="color:#00d2ff">What is an<br>Aero Lab?</h3>`;
+    aeroInfoCard.onclick = () => {
+      document.getElementById('brand-overlay').classList.add('hidden');
+      document.getElementById('library-overlay').classList.remove('hidden');
+      document.getElementById('lib-car-name').innerHTML = `Wind Tunnels Explained`;
+      document.getElementById('lib-content').innerHTML = `
+        <div class="library-section" style="grid-column: 1 / -1;">
+          <h3>Aerodynamics & The Aero Lab</h3>
+          <p>An <strong>Aero Lab</strong> (Wind Tunnel) is an engineering facility used to study the effects of air moving past solid objects. In automotive design, wind tunnels are crucial for minimizing <strong>drag</strong> (which improves top speed and fuel efficiency) and maximizing <strong>downforce</strong> (which presses the tires into the track for higher cornering speeds).</p>
+          <p>By simulating wind passing over the vehicle, engineers can use smoke streams or thermal-mapped sensors to detect wake turbulence, high-pressure stagnation points (red zones), and smooth laminar flow (green zones).</p>
+        </div>
+      `;
+    };
+    grid.appendChild(aeroInfoCard);
+  }
+
+  displayBrands.forEach(brand => {
     const card = document.createElement('div'); card.className = 'brand-card';
     let logoHTML = '';
     if (logoMap[brand]) logoHTML = `<img src="${logoMap[brand]}" alt="${brand}" class="brand-logo" onerror="this.style.display='none'">`;
@@ -179,13 +210,14 @@ function showVehicles(vehicles, title) {
   grid.innerHTML = '';
   vehicles.forEach(vehicle => {
     const card = document.createElement('div'); card.className = 'car-card';
-    card.innerHTML = `<img src="" id="img-${vehicle.id}" alt="${vehicle.name}"><div class="card-info"><h3>${vehicle.name}</h3><p>${vehicle.specs.power || ''}</p></div>`;
+    let driverInfo = vehicle.type === 'f1' && appState.intent === 'showroom' ? `<p style="color:#aaa; font-size:0.8rem">Driven by: ${vehicle.specs.driven_by}</p>` : '';
+    card.innerHTML = `<img src="" id="img-${vehicle.id}" alt="${vehicle.name}"><div class="card-info"><h3>${vehicle.name}</h3><p>${vehicle.specs.power || ''}</p>${driverInfo}</div>`;
     card.onclick = () => {
       if (appState.intent === 'library') showLibraryInfo(vehicle);
       else loadVehicle(vehicle);
     };
     grid.appendChild(card);
-    setTimeout(() => loadFallbackImage(document.getElementById(`img-${vehicle.id}`), vehicle.thumbnails), 0);
+    setTimeout(() => loadFallbackImage(document.getElementById(`img-${vehicle.id}`), vehicle.thumbnails, vehicle.name), 0);
   });
 }
 
@@ -193,7 +225,9 @@ function showLibraryInfo(vehicle) {
   hideAllOverlays();
   document.getElementById('top-bar').classList.remove('hidden');
   document.getElementById('library-overlay').classList.remove('hidden');
-  document.getElementById('lib-car-name').textContent = vehicle.name;
+  
+  let logoHTML = logoMap[vehicle.brand] ? `<img src="${logoMap[vehicle.brand]}" style="height: 40px; margin-right: 1rem; filter:drop-shadow(0 0 5px rgba(255,255,255,0.5))">` : '';
+  document.getElementById('lib-car-name').innerHTML = `${logoHTML} ${vehicle.name}`;
   
   let html = `<div class="library-section"><h3>Specifications</h3><p><strong>Brand:</strong> ${vehicle.brand}</p>`;
   for (const [key, value] of Object.entries(vehicle.specs || {})) {
@@ -226,7 +260,7 @@ function showGarage() {
     card.innerHTML = `<img src="" id="garage-img-${vehicle.id}" alt="${vehicle.name}"><div class="card-info"><h3>${vehicle.name}</h3></div>`;
     card.onclick = () => { appState.intent = 'showroom'; loadVehicle(vehicle); }; 
     grid.appendChild(card);
-    setTimeout(() => loadFallbackImage(document.getElementById(`garage-img-${vehicle.id}`), vehicle.thumbnails), 0);
+    setTimeout(() => loadFallbackImage(document.getElementById(`garage-img-${vehicle.id}`), vehicle.thumbnails, vehicle.name), 0);
   });
 }
 
