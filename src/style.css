@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+:root {
+  --glass-bg: rgba(20, 20, 25, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(16px);
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --accent-color: #007acc;
+  --accent-hover: #0099ff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background-color: #050505;
+  color: var(--text-primary);
+}
+
+/* 3D Canvas */
+#webgl-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+/* UI Layer */
+#ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: none; /* Let clicks pass through to 3D canvas */
+  display: flex;
+  flex-direction: column;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  pointer-events: auto; /* Enable clicks on panels */
+}
+
+/* Header */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  margin: 1rem;
+  border-radius: 12px;
+}
+
+.top-bar h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+nav button {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-family: inherit;
+  margin-left: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+nav button:hover, nav button.active {
+  color: var(--text-primary);
+}
+
+/* Sidebars */
+.sidebar {
+  position: absolute;
+  top: 6rem;
+  bottom: 2rem;
+  width: 320px;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.left-panel {
+  left: 1rem;
+}
+
+.right-panel {
+  right: 1rem;
+}
+
+.sidebar h2, .sidebar h3 {
+  font-weight: 400;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.5rem;
+}
+
+/* Vehicle List */
+#vehicle-list {
+  list-style: none;
+  overflow-y: auto;
+}
+
+#vehicle-list li {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+#vehicle-list li:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+/* Specs */
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.9rem;
+}
+
+.spec-label {
+  color: var(--text-secondary);
+}
+
+.spec-value {
+  font-weight: 600;
+}
+
+/* Buttons */
+.interaction-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.interaction-buttons button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.interaction-buttons button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Color Picker */
+#color-picker {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-swatch:hover, .color-swatch.active {
+  transform: scale(1.1);
+  border-color: #fff;
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+
+/* Loading Screen */
+#loading-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  padding: 2rem 4rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+#progress-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--accent-color);
+  transition: width 0.1s ease-out;
+}

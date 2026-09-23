@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CarAtlas | 3D Automotive Explorer</title>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <!-- 3D Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Glassmorphism UI Overlay -->
+    <main id="ui-layer">
+      
+      <header class="glass-panel top-bar">
+        <h1>CarAtlas</h1>
+        <nav>
+          <button id="btn-showroom" class="active">Showroom</button>
+          <button id="btn-aero">Aero Lab</button>
+          <button id="btn-garage">My Garage</button>
+        </nav>
+      </header>
+
+      <div class="sidebar glass-panel left-panel">
+        <h2>Select Vehicle</h2>
+        <ul id="vehicle-list">
+          <!-- Populated by JS -->
+        </ul>
+      </div>
+
+      <div class="sidebar glass-panel right-panel">
+        <h2>Specifications</h2>
+        <div id="specs-content">
+          <p class="placeholder">Select a vehicle to view its specifications.</p>
+        </div>
+        
+        <div id="interactions" class="hidden">
+          <h3>Interactions</h3>
+          <div class="interaction-buttons">
+            <button id="btn-door">Toggle Doors</button>
+            <button id="btn-hood">Toggle Hood</button>
+            <button id="btn-lights">Toggle Lights</button>
+          </div>
+          <h3>Colors</h3>
+          <div id="color-picker">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <div id="loading-screen" class="glass-panel">
+      <h2>Loading Assets...</h2>
+      <div class="progress-bar-container">
+        <div id="progress-bar"></div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

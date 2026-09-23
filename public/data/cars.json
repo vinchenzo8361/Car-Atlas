@@ -1,0 +1,53 @@
+{
+  "vehicles": [
+    {
+      "id": "porsche_911_gt3",
+      "name": "Porsche 911 GT3 (992)",
+      "type": "car",
+      "modelPath": "/models/cars/porsche_911.glb",
+      "specs": {
+        "engine": "4.0L Naturally Aspirated Flat-6",
+        "power": "502 hp @ 8,400 rpm",
+        "torque": "346 lb-ft @ 6,100 rpm",
+        "0_60": "3.2 seconds",
+        "top_speed": "197 mph",
+        "weight": "3,164 lbs",
+        "drag_coefficient": 0.33,
+        "downforce": "849 lbs @ 124 mph"
+      },
+      "interactions": {
+        "doors": ["door_left", "door_right"],
+        "hood": ["hood", "engine_cover"],
+        "lights": ["headlight_L", "headlight_R", "taillight"]
+      },
+      "availableColors": [
+        {"name": "Guards Red", "hex": "#cc0000"},
+        {"name": "Shark Blue", "hex": "#0055ff"},
+        {"name": "GT Silver Metallic", "hex": "#c0c0c0"},
+        {"name": "Racing Yellow", "hex": "#ffcc00"}
+      ]
+    },
+    {
+      "id": "ducati_panigale_v4",
+      "name": "Ducati Panigale V4 S",
+      "type": "bike",
+      "modelPath": "/models/bikes/ducati_v4.glb",
+      "specs": {
+        "engine": "1,103cc Desmosedici Stradale V4",
+        "power": "214 hp @ 13,000 rpm",
+        "torque": "91.5 lb-ft @ 10,000 rpm",
+        "0_60": "2.9 seconds",
+        "top_speed": "186 mph (Electronically Limited)",
+        "weight": "432 lbs (Curb)",
+        "drag_coefficient": 0.31,
+        "downforce": "81 lbs @ 186 mph"
+      },
+      "interactions": {
+        "lights": ["headlight", "taillight"]
+      },
+      "availableColors": [
+        {"name": "Ducati Red", "hex": "#da291c"}
+      ]
+    }
+  ]
+}
