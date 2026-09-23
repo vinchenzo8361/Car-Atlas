@@ -77,39 +77,42 @@ const thermalMaterial = new THREE.ShaderMaterial({
 // =======================
 let appState = {
   vehicles: [], brands: [], currentVehicle: null, currentModel: null, garage: [], 
-  intent: 'home' // 'home', 'showroom', 'aero', 'library', 'garage'
+  intent: 'home' 
 };
 
+// Extremely robust hardcoded logo map
 const logoMap = {
-  "Porsche": "https://cdn.simpleicons.org/porsche/D5001C",
-  "McLaren": "https://cdn.simpleicons.org/mclaren/FF7B00",
-  "Ferrari": "https://cdn.simpleicons.org/ferrari/E32119",
-  "Lamborghini": "https://cdn.simpleicons.org/lamborghini/DCB514",
-  "Audi": "https://cdn.simpleicons.org/audi/F50537",
-  "Bugatti": "https://cdn.simpleicons.org/bugatti/C8102E",
-  "Nissan": "https://cdn.simpleicons.org/nissan/C3002F",
-  "BMW": "https://cdn.simpleicons.org/bmw/0066B1",
-  "Mercedes": "https://cdn.simpleicons.org/mercedes/FFFFFF",
-  "Koenigsegg": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Koenigsegg_logo.svg", // Replaced text with SVG!
-  "Aston Martin": "https://cdn.simpleicons.org/astonmartin/00665E",
-  "Chevrolet": "https://cdn.simpleicons.org/chevrolet/CD9834",
-  "Toyota": "https://cdn.simpleicons.org/toyota/EB0A1E",
-  "Dodge": "https://cdn.simpleicons.org/dodge/CC0000"
+  "Porsche": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Porsche_logo.svg/1024px-Porsche_logo.svg.png",
+  "McLaren": "https://upload.wikimedia.org/wikipedia/en/thumb/3/30/McLaren_Racing_logo.svg/1024px-McLaren_Racing_logo.svg.png",
+  "Ferrari": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d1/Ferrari-Logo.svg/1024px-Ferrari-Logo.svg.png",
+  "Lamborghini": "https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Lamborghini_Logo.svg/1024px-Lamborghini_Logo.svg.png",
+  "Audi": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/1024px-Audi-Logo_2016.svg.png",
+  "Bugatti": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Bugatti_logo.svg/1024px-Bugatti_logo.svg.png",
+  "Nissan": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Nissan_logo.png/1024px-Nissan_logo.png",
+  "BMW": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/BMW_logo_%28gray%29.svg/1024px-BMW_logo_%28gray%29.svg.png",
+  "Mercedes": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/1024px-Mercedes-Logo.svg.png",
+  "Koenigsegg": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Koenigsegg_logo.svg/1024px-Koenigsegg_logo.svg.png",
+  "Aston Martin": "https://upload.wikimedia.org/wikipedia/en/thumb/b/bc/Aston_Martin_logo.svg/1024px-Aston_Martin_logo.svg.png",
+  "Chevrolet": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Chevrolet_logo_2013.svg/1024px-Chevrolet_logo_2013.svg.png",
+  "Toyota": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/1024px-Toyota.svg.png",
+  "Dodge": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Dodge_logo.svg/1024px-Dodge_logo.svg.png"
 };
 
-// Rock-solid fallback loader
-const ULTIMATE_FALLBACK_IMG = "https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=600"; 
-function loadFallbackImage(imgElement, urls, vehicleName) {
-  const safeUrls = urls ? [...urls, ULTIMATE_FALLBACK_IMG] : [ULTIMATE_FALLBACK_IMG];
+// Using a local image if it exists, otherwise it will instantly trigger onerror
+const LOCAL_FALLBACK_IMG = "/images/fallback.jpg"; 
+
+function loadFallbackImage(imgElement, urls) {
+  const safeUrls = urls ? [...urls, LOCAL_FALLBACK_IMG] : [LOCAL_FALLBACK_IMG];
   let index = 0;
   imgElement.onerror = function() {
     index++;
     if (index < safeUrls.length) {
       imgElement.src = safeUrls[index];
     } else {
+      // If absolutely everything fails, replace with CSS block
       const fallback = document.createElement('div');
       fallback.className = 'fallback-img';
-      fallback.textContent = vehicleName + ' IMAGE UNAVAILABLE';
+      fallback.textContent = 'IMAGE UNAVAILABLE';
       if(imgElement.parentNode) imgElement.parentNode.replaceChild(fallback, imgElement);
     }
   };
@@ -119,6 +122,12 @@ function loadFallbackImage(imgElement, urls, vehicleName) {
 const loadingManager = new THREE.LoadingManager();
 loadingManager.onProgress = (u, i, t) => document.getElementById('progress-bar').style.width = (i / t * 100) + '%';
 loadingManager.onLoad = () => setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 500);
+// Handle missing model perfectly!
+loadingManager.onError = () => { 
+  document.getElementById('loading-screen').classList.add('hidden');
+  document.getElementById('model-error-modal').classList.remove('hidden');
+  removeCurrentCar();
+};
 
 const gltfLoader = new GLTFLoader(loadingManager).setDRACOLoader(new DRACOLoader().setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/'));
 
@@ -176,22 +185,30 @@ function showVehicles(vehicles, title) {
       else loadVehicle(vehicle);
     };
     grid.appendChild(card);
-    setTimeout(() => loadFallbackImage(document.getElementById(`img-${vehicle.id}`), vehicle.thumbnails, vehicle.name), 0);
+    setTimeout(() => loadFallbackImage(document.getElementById(`img-${vehicle.id}`), vehicle.thumbnails), 0);
   });
 }
 
 function showLibraryInfo(vehicle) {
   hideAllOverlays();
+  document.getElementById('top-bar').classList.remove('hidden');
   document.getElementById('library-overlay').classList.remove('hidden');
   document.getElementById('lib-car-name').textContent = vehicle.name;
   
-  let html = `<p><strong>Brand:</strong> ${vehicle.brand}</p>`;
+  let html = `<div class="library-section"><h3>Specifications</h3><p><strong>Brand:</strong> ${vehicle.brand}</p>`;
+  for (const [key, value] of Object.entries(vehicle.specs || {})) {
+    html += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> ${value}</p>`;
+  }
+  html += `</div>`;
+  
   if(vehicle.library) {
+    html += `<div class="library-section"><h3>Encyclopedia Data</h3>`;
     for (const [key, value] of Object.entries(vehicle.library)) {
       html += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> ${value}</p>`;
     }
+    html += `</div>`;
   } else {
-    html += `<p>Detailed encyclopedia information is being compiled for this vehicle...</p>`;
+    html += `<div class="library-section"><h3>Encyclopedia Data</h3><p>Detailed historical and engineering records are currently being compiled for this vehicle.</p></div>`;
   }
   document.getElementById('lib-content').innerHTML = html;
 }
@@ -207,9 +224,9 @@ function showGarage() {
   savedCars.forEach(vehicle => {
     const card = document.createElement('div'); card.className = 'car-card';
     card.innerHTML = `<img src="" id="garage-img-${vehicle.id}" alt="${vehicle.name}"><div class="card-info"><h3>${vehicle.name}</h3></div>`;
-    card.onclick = () => { appState.intent = 'showroom'; loadVehicle(vehicle); }; // Always go to showroom from garage
+    card.onclick = () => { appState.intent = 'showroom'; loadVehicle(vehicle); }; 
     grid.appendChild(card);
-    setTimeout(() => loadFallbackImage(document.getElementById(`garage-img-${vehicle.id}`), vehicle.thumbnails, vehicle.name), 0);
+    setTimeout(() => loadFallbackImage(document.getElementById(`garage-img-${vehicle.id}`), vehicle.thumbnails), 0);
   });
 }
 
@@ -229,6 +246,7 @@ function hideAllOverlays() {
   document.getElementById('specs-sidebar').classList.add('hidden');
   document.getElementById('aero-tv-overlay').classList.add('hidden');
   document.getElementById('top-bar').classList.add('hidden');
+  document.getElementById('model-error-modal').classList.add('hidden');
 }
 
 window.goHome = function() {
@@ -256,15 +274,24 @@ window.changeMaterialColor = function(partType, hexColor) {
       if (partType === 'paint' && (name.includes('body') || name.includes('paint') || c.userData.isCarPaint)) {
         gsap.to(c.material.color, { r: new THREE.Color(hexColor).r, g: new THREE.Color(hexColor).g, b: new THREE.Color(hexColor).b, duration: 0.5 });
       }
-      if (partType === 'caliper' && (name.includes('caliper') || name.includes('brake'))) {
+      else if (partType === 'caliper' && (name.includes('caliper') || name.includes('brake'))) {
         gsap.to(c.material.color, { r: new THREE.Color(hexColor).r, g: new THREE.Color(hexColor).g, b: new THREE.Color(hexColor).b, duration: 0.5 });
+      }
+      else if (partType === 'rim' && (name.includes('rim') || name.includes('wheel'))) {
+        gsap.to(c.material.color, { r: new THREE.Color(hexColor).r, g: new THREE.Color(hexColor).g, b: new THREE.Color(hexColor).b, duration: 0.5 });
+      }
+      else if (partType === 'glass' && (name.includes('glass') || name.includes('window'))) {
+        gsap.to(c.material.color, { r: new THREE.Color(hexColor).r, g: new THREE.Color(hexColor).g, b: new THREE.Color(hexColor).b, duration: 0.5 });
+        if(c.material.transparent) c.material.opacity = 0.8;
       }
     }
   });
 };
 
 function activateAeroModeLogic() {
-  isAeroLab = true; windInstanced.visible = true; controls.enabled = false; 
+  isAeroLab = true; windInstanced.visible = true; 
+  // FIX: Explicitly keep controls enabled in Aero Mode so user can move mouse!
+  controls.enabled = true; 
   document.getElementById('aero-tv-overlay').classList.remove('hidden');
   scene.background = new THREE.Color('#00030a');
   setAeroCamera('isometric');
@@ -312,6 +339,8 @@ function loadVehicle(vehicle) {
 
     document.getElementById('loading-screen').classList.remove('hidden');
     document.getElementById('loading-text').textContent = `Loading ${vehicle.name}...`;
+    document.getElementById('progress-bar').style.width = '0%';
+    
     gltfLoader.load(vehicle.modelUrl, (gltf) => {
       const box = new THREE.Box3().setFromObject(gltf.scene);
       gltf.scene.position.sub(box.getCenter(new THREE.Vector3()));
@@ -331,6 +360,7 @@ function loadVehicle(vehicle) {
   }
 }
 
+// TV Camera controls for Aero
 window.setAeroCamera = function(pos) {
   if (pos === 'top') gsap.to(camera.position, { x: 0, y: 12, z: 0.1, duration: 1.5 });
   if (pos === 'bottom') gsap.to(camera.position, { x: 0, y: -2, z: 0.1, duration: 1.5 });
@@ -339,6 +369,7 @@ window.setAeroCamera = function(pos) {
   if (pos === 'front') gsap.to(camera.position, { x: 0, y: 1.5, z: 12, duration: 1.5 });
   if (pos === 'back') gsap.to(camera.position, { x: 0, y: 1.5, z: -12, duration: 1.5 });
   if (pos === 'isometric') gsap.to(camera.position, { x: 8, y: 4, z: 8, duration: 1.5 });
+  if (pos === 'isometric-rear') gsap.to(camera.position, { x: -8, y: 4, z: -8, duration: 1.5 });
 };
 
 function resetSceneDefaults() {
@@ -350,8 +381,11 @@ function resetSceneDefaults() {
 }
 
 function setupNav() {
+  // Bind globally so HTML onClick works perfectly
+  window.goHome = goHome;
   document.querySelectorAll('.btn-go-home').forEach(btn => btn.onclick = goHome);
   document.getElementById('btn-home').onclick = goHome;
+  
   document.getElementById('btn-back-brands').onclick = () => selectIntent(appState.intent);
   document.getElementById('btn-library-back').onclick = () => selectIntent('library');
   
