@@ -564,7 +564,7 @@
     {
       "id": "f1_rb19",
       "brand": "Formula 1",
-      "name": "Red Bull RB19",
+      "name": "Red Bull RB19 (2023)",
       "type": "f1",
       "modelUrl": "/models/cars/f1_rb19.glb",
       "thumbnails": [],
@@ -579,25 +579,91 @@
         "engineering": {
           "Engine Layout": "1.6L Turbo V6 Hybrid",
           "Drivetrain": "Mid-Engine, RWD",
-          "Transmission": "8-Speed Seamless Shift",
+          "Transmission": "8-Speed",
           "Horsepower": "1,000+ hp",
           "0-60 mph": "2.1s",
           "Top Speed": "220 mph",
           "Curb Weight": "1,759 lbs",
-          "Peak Downforce": "Extreme (Ground Effect)"
+          "Peak Downforce": "Extreme"
         },
         "production": {
           "Designer / Driver": "Max Verstappen",
-          "Est. MSRP / Cost": "$15,000,000+",
-          "Nürburgring Time": "N/A (F1 Specs)"
+          "Est. MSRP / Cost": "$15M+",
+          "Nürburgring Time": "N/A"
         },
-        "history": "Statistically the most dominant car in Formula 1 history. Driven by Max Verstappen and Sergio Perez, the RB19 won 21 out of 22 races in the 2023 season. Designed by Adrian Newey, its mastery of the ground-effect regulations allowed it to run extremely low to the ground without suffering from the 'porpoising' issues that plagued its competitors."
+        "history": "Won 21 of 22 races in 2023. Adrian Newey's ground-effect masterpiece."
+      }
+    },
+    {
+      "id": "f1_rb18",
+      "brand": "Formula 1",
+      "name": "Red Bull RB18 (2022)",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_rb18.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "1,000+ hp",
+        "engine": "1.6L Turbo V6 Hybrid",
+        "0_60": "2.1s",
+        "top_speed": "215 mph",
+        "driven_by": "Max Verstappen"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.6L Turbo V6 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed",
+          "Horsepower": "1,000+ hp",
+          "0-60 mph": "2.1s",
+          "Top Speed": "215 mph",
+          "Curb Weight": "1,759 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Max Verstappen",
+          "Est. MSRP / Cost": "$15M+",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "The first car of the new ground-effect era, securing Max Verstappen's second world championship."
+      }
+    },
+    {
+      "id": "f1_rb16b",
+      "brand": "Formula 1",
+      "name": "Red Bull RB16B (2021)",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_rb16b.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "1,000+ hp",
+        "engine": "1.6L Turbo V6 Hybrid",
+        "0_60": "2.0s",
+        "top_speed": "220 mph",
+        "driven_by": "Max Verstappen"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.6L Turbo V6 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed",
+          "Horsepower": "1,000+ hp",
+          "0-60 mph": "2.0s",
+          "Top Speed": "220 mph",
+          "Curb Weight": "1,657 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Max Verstappen",
+          "Est. MSRP / Cost": "$15M+",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "The car that ended Mercedes' dominance, winning the dramatic 2021 Abu Dhabi Grand Prix."
       }
     },
     {
       "id": "f1_w11",
       "brand": "Formula 1",
-      "name": "Mercedes-AMG W11",
+      "name": "Mercedes-AMG W11 (2020)",
       "type": "f1",
       "modelUrl": "/models/cars/f1_w11.glb",
       "thumbnails": [],
@@ -612,40 +678,139 @@
         "engineering": {
           "Engine Layout": "1.6L Turbo V6 Hybrid",
           "Drivetrain": "Mid-Engine, RWD",
-          "Transmission": "8-Speed Seamless Shift",
+          "Transmission": "8-Speed",
           "Horsepower": "1,050+ hp",
           "0-60 mph": "2.0s",
           "Top Speed": "220 mph",
           "Curb Weight": "1,644 lbs",
-          "Peak Downforce": "Extreme (Multi-Wing)"
+          "Peak Downforce": "Extreme"
         },
         "production": {
           "Designer / Driver": "Lewis Hamilton",
-          "Est. MSRP / Cost": "$15,000,000+",
-          "Nürburgring Time": "N/A (F1 Specs)"
+          "Est. MSRP / Cost": "$15M+",
+          "Nürburgring Time": "N/A"
         },
-        "history": "Widely regarded as the fastest Formula 1 car ever built. Operating under the high-downforce regulations of 2020, the W11 smashed track records across the globe. It famously introduced the DAS (Dual Axis Steering) system, allowing the driver to change the toe angle of the front wheels by pulling the steering wheel, optimizing tire temperatures."
+        "history": "Widely regarded as the fastest Formula 1 car ever built. It famously introduced the DAS (Dual Axis Steering) system."
+      }
+    },
+    {
+      "id": "f1_w10",
+      "brand": "Formula 1",
+      "name": "Mercedes-AMG W10 (2019)",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_w10.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "1,000+ hp",
+        "engine": "1.6L Turbo V6 Hybrid",
+        "0_60": "2.1s",
+        "top_speed": "215 mph",
+        "driven_by": "Lewis Hamilton"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.6L Turbo V6 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed",
+          "Horsepower": "1,000+ hp",
+          "0-60 mph": "2.1s",
+          "Top Speed": "215 mph",
+          "Curb Weight": "1,638 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Lewis Hamilton",
+          "Est. MSRP / Cost": "$15M+",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "Secured Mercedes' 6th consecutive double world championship, dominating the first half of the season."
+      }
+    },
+    {
+      "id": "f1_w07",
+      "brand": "Formula 1",
+      "name": "Mercedes-AMG W07 (2016)",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_w07.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "950+ hp",
+        "engine": "1.6L Turbo V6 Hybrid",
+        "0_60": "2.2s",
+        "top_speed": "210 mph",
+        "driven_by": "Nico Rosberg"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.6L Turbo V6 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed",
+          "Horsepower": "950+ hp",
+          "0-60 mph": "2.2s",
+          "Top Speed": "210 mph",
+          "Curb Weight": "1,547 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Nico Rosberg",
+          "Est. MSRP / Cost": "$15M+",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "Won 19 of 21 races in 2016, securing Nico Rosberg's only World Championship in an intense battle against Lewis Hamilton."
+      }
+    },
+    {
+      "id": "f1_w05",
+      "brand": "Formula 1",
+      "name": "Mercedes-AMG W05 (2014)",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_w05.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "850+ hp",
+        "engine": "1.6L Turbo V6 Hybrid",
+        "0_60": "2.4s",
+        "top_speed": "210 mph",
+        "driven_by": "Lewis Hamilton"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.6L Turbo V6 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed",
+          "Horsepower": "850+ hp",
+          "0-60 mph": "2.4s",
+          "Top Speed": "210 mph",
+          "Curb Weight": "1,523 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Lewis Hamilton",
+          "Est. MSRP / Cost": "$15M+",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "The car that started the Mercedes turbo-hybrid dynasty. It was so far ahead of the competition that they often ran it detuned to preserve the engine."
       }
     },
     {
       "id": "f1_f2004",
       "brand": "Formula 1",
-      "name": "Ferrari F2004",
+      "name": "Ferrari F2004 (2004)",
       "type": "f1",
       "modelUrl": "/models/cars/f1_f2004.glb",
       "thumbnails": [],
       "specs": {
         "power": "900+ hp",
-        "engine": "3.0L Naturally Aspirated V10",
+        "engine": "3.0L N/A V10",
         "0_60": "2.3s",
         "top_speed": "215 mph",
         "driven_by": "Michael Schumacher"
       },
       "library": {
         "engineering": {
-          "Engine Layout": "3.0L Naturally Aspirated V10",
+          "Engine Layout": "3.0L N/A V10",
           "Drivetrain": "Mid-Engine, RWD",
-          "Transmission": "7-Speed Semi-Auto",
+          "Transmission": "7-Speed",
           "Horsepower": "900+ hp",
           "0-60 mph": "2.3s",
           "Top Speed": "215 mph",
@@ -657,18 +822,18 @@
           "Est. MSRP / Cost": "Priceless",
           "Nürburgring Time": "N/A"
         },
-        "history": "The pinnacle of the V10 era. The F2004 won 15 out of 18 races in the 2004 season, securing Michael Schumacher's 7th World Championship. The car was so incredibly light and the engine so powerful that its lap records stood for well over a decade, with many drivers considering it the absolute peak of raw F1 driving experience."
+        "history": "The pinnacle of the V10 era. The F2004 won 15 out of 18 races in the 2004 season, securing Michael Schumacher's 7th World Championship."
       }
     },
     {
       "id": "f1_mp44",
       "brand": "Formula 1",
-      "name": "McLaren MP4/4",
+      "name": "McLaren MP4/4 (1988)",
       "type": "f1",
       "modelUrl": "/models/cars/f1_mp44.glb",
       "thumbnails": [],
       "specs": {
-        "power": "700-1200+ hp (Boost)",
+        "power": "700-1200+ hp",
         "engine": "1.5L Twin-Turbo V6",
         "0_60": "2.5s",
         "top_speed": "207 mph",
@@ -678,8 +843,8 @@
         "engineering": {
           "Engine Layout": "1.5L Twin-Turbo V6",
           "Drivetrain": "Mid-Engine, RWD",
-          "Transmission": "6-Speed Manual",
-          "Horsepower": "700-1200+ hp (Boost)",
+          "Transmission": "6-Speed",
+          "Horsepower": "700-1200+ hp",
           "0-60 mph": "2.5s",
           "Top Speed": "207 mph",
           "Curb Weight": "1,190 lbs",
@@ -690,7 +855,7 @@
           "Est. MSRP / Cost": "Priceless",
           "Nürburgring Time": "N/A"
         },
-        "history": "The icon of the late 80s turbo era. Designed by Gordon Murray and Steve Nichols, the MP4/4 introduced a radically low-slung chassis layout. Driven by Ayrton Senna and Alain Prost, the car won 15 out of 16 races in the 1988 season, a win percentage of 93.8% that was only recently broken by the RB19."
+        "history": "The icon of the late 80s turbo era. Driven by Ayrton Senna and Alain Prost, it won 15 out of 16 races in the 1988 season."
       }
     },
     {
@@ -733,6 +898,34 @@
       },
       "library": {
         "history": "A sphere used to study laminar flow separation."
+      }
+    },
+    {
+      "id": "test_blockycar",
+      "brand": "Test",
+      "name": "Blocky Fake Car",
+      "type": "car",
+      "modelUrl": "primitive:blockycar",
+      "thumbnails": [],
+      "specs": {
+        "power": "0 hp"
+      },
+      "library": {
+        "history": "A highly inefficient geometric block car meant to simulate the extreme drag of older brick-like vehicles."
+      }
+    },
+    {
+      "id": "test_smoothcar",
+      "brand": "Test",
+      "name": "Smooth Aero Car",
+      "type": "car",
+      "modelUrl": "primitive:smoothcar",
+      "thumbnails": [],
+      "specs": {
+        "power": "0 hp"
+      },
+      "library": {
+        "history": "A perfectly smooth aerodynamic capsule meant to simulate low-drag futuristic concepts."
       }
     }
   ]

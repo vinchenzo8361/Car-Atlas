@@ -445,16 +445,54 @@ function setupNav() {
 }
 
 const dummy = new THREE.Object3D();
+const carBox = new THREE.Box3();
+const carCenter = new THREE.Vector3();
+const carSize = new THREE.Vector3();
+
 function animate() {
   if (isAeroLab && windInstanced) {
     const spd = document.getElementById('wind-speed').value / 50;
     const vels = windInstanced.userData.velocities;
+    
+    // Compute bounding box of current car if it exists
+    if (appState.currentModel) {
+      carBox.setFromObject(appState.currentModel);
+      carBox.getCenter(carCenter);
+      carBox.getSize(carSize);
+    }
+
     for (let i = 0; i < windCount; i++) {
       windInstanced.getMatrixAt(i, dummy.matrix); dummy.position.setFromMatrixPosition(dummy.matrix);
+      
+      // Move forward
       dummy.position.z -= vels[i] * spd;
-      if (dummy.position.z > -3 && dummy.position.z < 3 && dummy.position.y < 1.8) dummy.position.y += 0.05 * spd;
-      else if (dummy.position.z < -3 && dummy.position.y > 0.1) dummy.position.y -= 0.03 * spd;
+      
+      // Fake CFD / Aero Deflection
+      if (appState.currentModel) {
+        // Only deflect if particle is near the car on the Z axis
+        if (dummy.position.z > carBox.min.z - 2 && dummy.position.z < carBox.max.z + 1) {
+          const distX = dummy.position.x - carCenter.x;
+          const distY = dummy.position.y - carCenter.y;
+          
+          // If inside the cross-section width/height
+          if (Math.abs(distX) < carSize.x/2 + 0.5 && Math.abs(distY) < carSize.y/2 + 0.5 && dummy.position.y > 0.1) {
+            // Push outwards depending on which quadrant they are in
+            const pushFactor = 0.08 * spd;
+            dummy.position.x += (distX > 0 ? 1 : -1) * pushFactor * (1.0 - Math.abs(distX)/carSize.x);
+            // Push up over the roof or down under the chassis
+            if (distY > 0) dummy.position.y += pushFactor;
+            else if (dummy.position.y > 0.1) dummy.position.y -= pushFactor * 0.5;
+          }
+        }
+      } else {
+        // Default wavy motion if no car
+        if (dummy.position.z > -3 && dummy.position.z < 3 && dummy.position.y < 1.8) dummy.position.y += 0.05 * spd;
+        else if (dummy.position.z < -3 && dummy.position.y > 0.1) dummy.position.y -= 0.03 * spd;
+      }
+
+      // Reset particles when they go too far back
       if (dummy.position.z < -10) dummy.position.set((Math.random() - 0.5) * 4, Math.random() * 2.0 + 0.1, 10 + Math.random() * 5);
+      
       dummy.updateMatrix(); windInstanced.setMatrixAt(i, dummy.matrix);
     }
     windInstanced.instanceMatrix.needsUpdate = true;
