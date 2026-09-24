@@ -37,8 +37,8 @@ let isThermal = false;
 const windCount = 3000; 
 
 function createAeroLab() {
-  const geometry = new THREE.BoxGeometry(0.015, 0.015, 5.0);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
+  const geometry = new THREE.BoxGeometry(0.015, 0.015, 10.0);
+  const material = new THREE.MeshBasicMaterial({ color: 0x0044ff, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
   windInstanced = new THREE.InstancedMesh(geometry, material, windCount);
   const dummy = new THREE.Object3D();
   const vels = new Float32Array(windCount);
@@ -81,21 +81,21 @@ let appState = {
 
 // Extremely robust hardcoded logo map
 const logoMap = {
-  "Porsche": "https://www.car-logos.org/wp-content/uploads/2011/09/porsche.png",
-  "McLaren": "https://www.car-logos.org/wp-content/uploads/2011/09/mclaren.png",
-  "Ferrari": "https://www.car-logos.org/wp-content/uploads/2011/09/ferrari.png",
-  "Lamborghini": "https://www.car-logos.org/wp-content/uploads/2011/09/lamborghini.png",
-  "Audi": "https://www.car-logos.org/wp-content/uploads/2011/09/audi.png",
-  "Bugatti": "https://www.car-logos.org/wp-content/uploads/2011/09/bugatti.png",
-  "Nissan": "https://www.car-logos.org/wp-content/uploads/2011/09/nissan.png",
-  "BMW": "https://www.car-logos.org/wp-content/uploads/2011/09/bmw.png",
-  "Mercedes": "https://www.car-logos.org/wp-content/uploads/2011/09/mercedes.png",
-  "Koenigsegg": "https://www.car-logos.org/wp-content/uploads/2011/09/koenigsegg.png",
-  "Aston Martin": "https://www.car-logos.org/wp-content/uploads/2011/09/aston-martin.png",
-  "Chevrolet": "https://www.car-logos.org/wp-content/uploads/2011/09/chevrolet.png",
-  "Toyota": "https://www.car-logos.org/wp-content/uploads/2011/09/toyota.png",
-  "Dodge": "https://www.car-logos.org/wp-content/uploads/2011/09/dodge.png",
-  "Formula 1": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/512px-F1.svg.png"
+  "Porsche": "https://cdn.worldvectorlogo.com/logos/porsche-6.svg",
+  "McLaren": "https://cdn.worldvectorlogo.com/logos/mclaren-4.svg",
+  "Ferrari": "https://cdn.worldvectorlogo.com/logos/ferrari-ges.svg",
+  "Lamborghini": "https://cdn.worldvectorlogo.com/logos/lamborghini-1.svg",
+  "Audi": "https://cdn.worldvectorlogo.com/logos/audi-11.svg",
+  "Bugatti": "https://cdn.worldvectorlogo.com/logos/bugatti-logo.svg",
+  "Nissan": "https://cdn.worldvectorlogo.com/logos/nissan-6.svg",
+  "BMW": "https://cdn.worldvectorlogo.com/logos/bmw.svg",
+  "Mercedes": "https://cdn.worldvectorlogo.com/logos/mercedes-benz-9.svg",
+  "Koenigsegg": "https://cdn.worldvectorlogo.com/logos/koenigsegg.svg",
+  "Aston Martin": "https://cdn.worldvectorlogo.com/logos/aston-martin-1.svg",
+  "Chevrolet": "https://cdn.worldvectorlogo.com/logos/chevrolet-1.svg",
+  "Toyota": "https://cdn.worldvectorlogo.com/logos/toyota.svg",
+  "Dodge": "https://cdn.worldvectorlogo.com/logos/dodge-2.svg",
+  "Formula 1": "https://cdn.worldvectorlogo.com/logos/f1-2.svg"
 };
 
 const LOCAL_FALLBACK_IMG = "/images/fallback.jpg"; 
@@ -457,7 +457,7 @@ function resetSceneDefaults() {
   isAeroLab = false; isThermal = false;
   windInstanced.visible = false;
   controls.enabled = true;
-  scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#050505');
+  scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#111216');
   if (appState.currentModel) appState.currentModel.traverse((c) => { if (c.isMesh && c.userData.originalMat) c.material = c.userData.originalMat; });
 }
 
@@ -477,7 +477,7 @@ function setupNav() {
   
   const toggleTheme = () => {
     isLightMode = !isLightMode; document.body.classList.toggle('light-mode');
-    if (!isAeroLab) scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#050505');
+    if (!isAeroLab) scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#111216');
   };
   
   document.getElementById('global-theme-toggle').onclick = toggleTheme;
@@ -509,34 +509,36 @@ function animate() {
       
       // Fake CFD / Aero Deflection
       if (appState.currentModel) {
-        // Only deflect if particle is near the car on the Z axis
-        if (dummy.position.z > carBox.min.z - 2 && dummy.position.z < carBox.max.z + 1) {
+        if (dummy.position.z > carBox.min.z - 3 && dummy.position.z < carBox.max.z + 1) {
           const distX = dummy.position.x - carCenter.x;
           const distY = dummy.position.y - carCenter.y;
+          const effectiveWidth = carSize.x/2 + 0.6;
+          const effectiveHeight = carSize.y/2 + 0.6;
           
-          // If inside the cross-section width/height
-          if (Math.abs(distX) < carSize.x/2 + 0.5 && Math.abs(distY) < carSize.y/2 + 0.5 && dummy.position.y > 0.1) {
-            // Push outwards depending on which quadrant they are in
-            const pushFactor = 0.08 * spd;
-            dummy.position.x += (distX > 0 ? 1 : -1) * pushFactor * (1.0 - Math.abs(distX)/carSize.x);
-            // Push up over the roof or down under the chassis
-            if (distY > 0) dummy.position.y += pushFactor;
-            else if (dummy.position.y > 0.1) dummy.position.y -= pushFactor * 0.5;
+          if (Math.abs(distX) < effectiveWidth && Math.abs(distY) < effectiveHeight && dummy.position.y > 0.05) {
+            const intensity = Math.pow(1.0 - (Math.abs(distX) / effectiveWidth), 2.0);
+            const pushFactor = 0.12 * spd * intensity;
+            dummy.position.x += (distX > 0 ? 1 : -1) * pushFactor;
+            
+            if (distY > 0) dummy.position.y += pushFactor * 1.2;
+            else if (dummy.position.y > 0.1) dummy.position.y -= pushFactor * 0.3;
           }
         }
       } else {
-        // Default wavy motion if no car
         if (dummy.position.z > -3 && dummy.position.z < 3 && dummy.position.y < 1.8) dummy.position.y += 0.05 * spd;
         else if (dummy.position.z < -3 && dummy.position.y > 0.1) dummy.position.y -= 0.03 * spd;
       }
 
-      // Reset particles when they go too far back
-      if (dummy.position.z < -10) dummy.position.set((Math.random() - 0.5) * 4, Math.random() * 2.0 + 0.1, 10 + Math.random() * 5);
-      
+      if (dummy.position.z < -10) dummy.position.set((Math.random() - 0.5) * 8, Math.random() * 4.0 + 0.1, 10 + Math.random() * 15);
       dummy.updateMatrix(); windInstanced.setMatrixAt(i, dummy.matrix);
     }
     windInstanced.instanceMatrix.needsUpdate = true;
   }
+  
+  if (appState.intent === 'showroom' && appState.currentModel) {
+    appState.currentModel.rotation.y += 0.003;
+  }
+
   controls.update(); renderer.render(scene, camera); window.requestAnimationFrame(animate);
 }
 animate(); init();
