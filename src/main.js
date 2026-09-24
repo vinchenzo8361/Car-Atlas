@@ -35,16 +35,16 @@ scene.add(ambientLight);
 let windInstanced = null;
 let isAeroLab = false;
 let isThermal = false;
-const windCount = 400; 
+const windCount = 3000; 
 
 function createAeroLab() {
-  const geometry = new THREE.BoxGeometry(0.02, 0.02, 1.5);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+  const geometry = new THREE.BoxGeometry(0.015, 0.015, 1.2);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
   windInstanced = new THREE.InstancedMesh(geometry, material, windCount);
   const dummy = new THREE.Object3D();
   const vels = new Float32Array(windCount);
   for (let i = 0; i < windCount; i++) {
-    dummy.position.set((Math.random() - 0.5) * 4, Math.random() * 2.0 + 0.1, 10 + Math.random() * 10);
+    dummy.position.set((Math.random() - 0.5) * 8, Math.random() * 4.0 + 0.1, 10 + Math.random() * 15);
     dummy.updateMatrix();
     windInstanced.setMatrixAt(i, dummy.matrix);
     vels[i] = Math.random() * 0.2 + 0.8;
@@ -94,7 +94,7 @@ const logoMap = {
   "Koenigsegg": "https://cdn.worldvectorlogo.com/logos/koenigsegg.svg",
   "Aston Martin": "https://cdn.worldvectorlogo.com/logos/aston-martin-1.svg",
   "Chevrolet": "https://cdn.worldvectorlogo.com/logos/chevrolet-1.svg",
-  "Toyota": "https://cdn.worldvectorlogo.com/logos/toyota-4.svg",
+  "Toyota": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/512px-Toyota.svg.png",
   "Dodge": "https://cdn.worldvectorlogo.com/logos/dodge-2.svg",
   "Formula 1": "https://cdn.worldvectorlogo.com/logos/f1-2.svg"
 };
@@ -152,9 +152,16 @@ window.selectIntent = function(intent) {
   appState.intent = intent;
   hideAllOverlays();
   
+  // Theme Button Logic
+  if (intent === 'home') {
+    document.getElementById('global-theme-toggle').style.display = 'block';
+  } else {
+    document.getElementById('global-theme-toggle').style.display = 'none';
+  }
+
   if (intent === 'garage') {
     showGarage();
-  } else {
+  } else if (intent !== 'home') {
     document.getElementById('top-bar').classList.remove('hidden');
     populateBrandGrid();
     document.getElementById('brand-overlay').classList.remove('hidden');
@@ -372,12 +379,35 @@ function loadVehicle(vehicle) {
   if (vehicle.modelUrl) {
     if (vehicle.modelUrl.startsWith('primitive:')) {
       const type = vehicle.modelUrl.split(':')[1];
-      let geo = type === 'box' ? new THREE.BoxGeometry(2, 1.5, 4) : type === 'sphere' ? new THREE.SphereGeometry(1.5, 64, 64) : new THREE.ConeGeometry(1.5, 4, 64);
-      if(type==='cone') geo.rotateX(Math.PI/2);
       const mat = new THREE.MeshPhysicalMaterial({ color: 0x999999, metalness: 0.5, roughness: 0.5 });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.y = 1.0; mesh.userData.isCarPaint = true; mesh.userData.originalMat = mat;
-      const group = new THREE.Group(); group.add(mesh);
+      const group = new THREE.Group();
+      
+      if (type === 'box') {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 4), mat);
+        mesh.position.y = 1.0; mesh.userData.isCarPaint = true; mesh.userData.originalMat = mat; group.add(mesh);
+      } else if (type === 'sphere') {
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 64, 64), mat);
+        mesh.position.y = 1.5; mesh.userData.isCarPaint = true; mesh.userData.originalMat = mat; group.add(mesh);
+      } else if (type === 'cone') {
+        const geo = new THREE.ConeGeometry(1.5, 4, 64); geo.rotateX(Math.PI/2);
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.y = 1.0; mesh.userData.isCarPaint = true; mesh.userData.originalMat = mat; group.add(mesh);
+      } else if (type === 'blockycar') {
+        const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0xcc0000, metalness: 0.5, roughness: 0.5 });
+        const bottom = new THREE.Mesh(new THREE.BoxGeometry(2, 0.8, 4.5), bodyMat);
+        const top = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.7, 2.5), bodyMat);
+        bottom.position.y = 0.4; top.position.y = 1.15; top.position.z = -0.2;
+        bottom.userData.isCarPaint = true; bottom.userData.originalMat = bodyMat;
+        top.userData.isCarPaint = true; top.userData.originalMat = bodyMat;
+        group.add(bottom); group.add(top);
+      } else if (type === 'smoothcar') {
+        const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x0055ff, metalness: 0.8, roughness: 0.2, clearcoat: 1.0 });
+        const geo = new THREE.CapsuleGeometry(1.0, 3, 32, 32); geo.rotateX(Math.PI/2);
+        const mesh = new THREE.Mesh(geo, bodyMat);
+        mesh.position.y = 1.0; mesh.userData.isCarPaint = true; mesh.userData.originalMat = bodyMat;
+        group.add(mesh);
+      }
+      
       finalizeLoad(group);
       return;
     }
@@ -438,10 +468,14 @@ function setupNav() {
     isThermal = !isThermal;
     if (appState.currentModel) appState.currentModel.traverse((c) => { if (c.isMesh && c.userData.originalMat) c.material = isThermal ? thermalMaterial : c.userData.originalMat; });
   };
-  document.getElementById('btn-theme-toggle').onclick = () => {
+  
+  const toggleTheme = () => {
     isLightMode = !isLightMode; document.body.classList.toggle('light-mode');
     if (!isAeroLab) scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#050505');
   };
+  
+  document.getElementById('global-theme-toggle').onclick = toggleTheme;
+  document.getElementById('nav-theme-toggle').onclick = toggleTheme;
 }
 
 const dummy = new THREE.Object3D();
