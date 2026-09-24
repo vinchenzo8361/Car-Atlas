@@ -1,16 +1,739 @@
 {
   "vehicles": [
-    { "id": "porsche_911_gt3_rs", "brand": "Porsche", "name": "911 GT3 RS", "type": "car", "modelUrl": "/models/cars/porsche_911_gt3_rs.glb", "thumbnails": ["https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600"], "specs": { "engine": "4.0L Flat-6", "power": "518 hp", "0_60": "3.0s", "top_speed": "184 mph", "downforce": "1,895 lbs" }, "library": { "prototype_year": "2022", "designer": "Andreas Preuninger", "origin": "Stuttgart, Germany", "tire_type": "Michelin Pilot Sport Cup 2 R", "history": "The 992-generation Porsche 911 GT3 RS is the most extreme naturally aspirated 911 ever built for public roads. It introduced active aerodynamics borrowed from Formula 1, including a Drag Reduction System (DRS). Its central radiator concept, replacing the traditional three-radiator setup, freed up space for massive active aero flaps in the front bumper."} },
-    { "id": "porsche_taycan", "brand": "Porsche", "name": "Taycan Turbo S", "type": "car", "modelUrl": "/models/cars/porsche_taycan.glb", "thumbnails": ["https://images.unsplash.com/photo-1614200179396-2bdb77bc3e15?w=600"], "specs": { "engine": "Dual Electric Motor", "power": "750 hp", "0_60": "2.6s", "top_speed": "161 mph", "downforce": "Low" }, "library": { "prototype_year": "2019", "designer": "Michael Mauer", "origin": "Stuttgart, Germany", "tire_type": "Pirelli P Zero", "history": "Porsche's first fully electric sports car. Developed from the Mission E concept, it utilizes an innovative 800-volt architecture for ultra-fast charging and consistent performance without thermal throttling."} },
-    { "id": "mclaren_p1", "brand": "McLaren", "name": "P1", "type": "car", "modelUrl": "/models/cars/mclaren_p1.glb", "thumbnails": ["https://images.unsplash.com/photo-1621648074902-601e7498c8dc?w=600"], "specs": { "engine": "3.8L V8 Hybrid", "power": "903 hp", "0_60": "2.7s", "top_speed": "217 mph", "downforce": "1,323 lbs" }, "library": { "prototype_year": "2012", "designer": "Frank Stephenson", "origin": "Woking, England", "tire_type": "Pirelli P Zero Corsa", "history": "Part of the legendary 'Holy Trinity' of hypercars alongside the LaFerrari and Porsche 918 Spyder. The P1 redefined the integration of hybrid technology for sheer performance, utilizing an electric motor to fill the torque gap of its massive twin turbos."} },
-    { "id": "ferrari_f40", "brand": "Ferrari", "name": "F40", "type": "car", "modelUrl": "/models/cars/ferrari_f40.glb", "thumbnails": ["https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600"], "specs": { "engine": "2.9L Twin-Turbo V8", "power": "471 hp", "0_60": "4.2s", "top_speed": "201 mph", "downforce": "Moderate" }, "library": { "prototype_year": "1987", "designer": "Pininfarina (Leonardo Fioravanti)", "origin": "Maranello, Italy", "tire_type": "Pirelli P Zero", "history": "The last Ferrari personally approved by Enzo Ferrari. Built to celebrate the brand's 40th anniversary, it was the first production car to break the 200 mph barrier, featuring a kevlar, carbon fiber, and aluminum body for extreme lightness."} },
-    { "id": "bugatti_chiron", "brand": "Bugatti", "name": "Chiron Super Sport", "type": "car", "modelUrl": "/models/cars/bugatti_chiron.glb", "thumbnails": ["https://images.unsplash.com/photo-1627454820516-dc76717a0279?w=600"], "specs": { "engine": "8.0L Quad-Turbo W16", "power": "1,578 hp", "0_60": "2.3s", "top_speed": "273 mph", "downforce": "Variable" }, "library": { "prototype_year": "2016", "designer": "Achim Anscheidt", "origin": "Molsheim, France", "tire_type": "Michelin Pilot Sport Cup 2", "history": "The Chiron Super Sport is an engineering marvel designed to bend physics. It famously broke the 300 mph barrier, utilizing a monstrous W16 engine and cooling systems that cycle hundreds of liters of water per minute."} },
-    { "id": "mercedes_amg_gt", "brand": "Mercedes", "name": "AMG GT Black Series", "type": "car", "modelUrl": "/models/cars/mercedes_amg_gt.glb", "thumbnails": ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600"], "specs": { "engine": "4.0L Twin-Turbo V8", "power": "720 hp", "0_60": "3.1s", "top_speed": "202 mph", "downforce": "882 lbs" }, "library": { "prototype_year": "2020", "designer": "Gorden Wagener", "origin": "Affalterbach, Germany", "tire_type": "Michelin Pilot Sport Cup 2 R", "history": "The absolute pinnacle of AMG engineering. It utilizes a flat-plane crank V8 and features aggressive aerodynamics directly derived from the AMG GT3 race car, briefly holding the Nürburgring lap record."} },
-    { "id": "f1_rb19", "brand": "Formula 1", "name": "Red Bull RB19 (2023)", "type": "f1", "modelUrl": "", "thumbnails": ["https://images.unsplash.com/photo-1681283624838-51f72cf0db8e?w=600"], "specs": { "engine": "Honda RBPTH001 1.6L V6 Turbo", "power": "1000+ hp", "0_60": "2.1s", "top_speed": "220 mph", "driven_by": "Max Verstappen" }, "library": { "season": "2023", "driver": "Max Verstappen", "driver_age": "26", "chassis": "RB19", "engine": "Honda RBPTH001", "tires": "Pirelli", "poles": "14", "wins": "21 (Team)", "podiums": "30 (Team)", "history": "The RB19 is statistically the most dominant car in Formula 1 history, winning 21 out of 22 races in the 2023 season. Designed by Adrian Newey, its ground-effect aerodynamics and suspension were unmatched." } },
-    { "id": "f1_w11", "brand": "Formula 1", "name": "Mercedes W11 (2020)", "type": "f1", "modelUrl": "", "thumbnails": ["https://images.unsplash.com/photo-1590848039750-61b7fcf76eb2?w=600"], "specs": { "engine": "Mercedes M11 EQ Performance", "power": "1000+ hp", "0_60": "2.0s", "top_speed": "220 mph", "driven_by": "Lewis Hamilton" }, "library": { "season": "2020", "driver": "Lewis Hamilton", "driver_age": "35", "chassis": "W11", "engine": "Mercedes M11", "tires": "Pirelli", "poles": "15", "wins": "13", "podiums": "25", "history": "Regarded as the fastest F1 car ever built due to the 2020 regulations. It featured the revolutionary DAS (Dual Axis Steering) system and set track records across the globe." } },
-    { "id": "f1_f2004", "brand": "Formula 1", "name": "Ferrari F2004 (2004)", "type": "f1", "modelUrl": "", "thumbnails": ["https://images.unsplash.com/photo-1533284133567-0da9844151ce?w=600"], "specs": { "engine": "Ferrari 053 3.0L V10", "power": "900+ hp", "0_60": "2.3s", "top_speed": "215 mph", "driven_by": "Michael Schumacher" }, "library": { "season": "2004", "driver": "Michael Schumacher", "driver_age": "35", "chassis": "F2004", "engine": "Ferrari V10", "tires": "Bridgestone", "poles": "12", "wins": "15", "podiums": "29", "history": "One of the most successful F1 cars ever. With its screaming V10 engine, it dominated the 2004 season and its lap records stood for over a decade at many circuits." } },
-    { "id": "f1_mp44", "brand": "Formula 1", "name": "McLaren MP4/4 (1988)", "type": "f1", "modelUrl": "", "thumbnails": ["https://images.unsplash.com/photo-1517524285303-d6fc683dddf8?w=600"], "specs": { "engine": "Honda RA168E 1.5L V6 Turbo", "power": "700+ hp", "0_60": "2.5s", "top_speed": "207 mph", "driven_by": "Ayrton Senna" }, "library": { "season": "1988", "driver": "Ayrton Senna", "driver_age": "28", "chassis": "MP4/4", "engine": "Honda RA168E", "tires": "Goodyear", "poles": "15", "wins": "15 (out of 16)", "podiums": "25", "history": "Driven by Senna and Prost, the MP4/4 won 15 of 16 races in 1988. Designed by Gordon Murray and Steve Nichols, its lowline chassis completely altered F1 car design." } },
-    { "id": "test_box", "brand": "Test", "name": "Aerodynamic Box", "type": "car", "modelUrl": "primitive:box", "thumbnails": ["https://images.unsplash.com/photo-1530225139097-0bb1c000eef1?w=600"], "specs": { "engine": "None", "power": "0 hp", "top_speed": "0 mph" }, "library": { "history": "A literal box used to test maximum thermal drag coefficient."} },
-    { "id": "test_cone", "brand": "Test", "name": "Aerodynamic Cone", "type": "car", "modelUrl": "primitive:cone", "thumbnails": ["https://images.unsplash.com/photo-1530225139097-0bb1c000eef1?w=600"], "specs": { "engine": "None", "power": "0 hp", "top_speed": "0 mph" }, "library": { "history": "A cone used to simulate optimal air slicing."} }
+    {
+      "id": "porsche_911_gt3_rs",
+      "brand": "Porsche",
+      "name": "911 GT3 RS",
+      "type": "car",
+      "modelUrl": "/models/cars/porsche_911_gt3_rs.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "518 hp @ 8,500 rpm",
+        "engine": "4.0L Naturally Aspirated Flat-6",
+        "0_60": "3.0s",
+        "top_speed": "184 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "4.0L Naturally Aspirated Flat-6",
+          "Drivetrain": "Rear-Engine, RWD",
+          "Transmission": "7-Speed PDK Dual-Clutch",
+          "Horsepower": "518 hp @ 8,500 rpm",
+          "0-60 mph": "3.0s",
+          "Top Speed": "184 mph",
+          "Curb Weight": "3,268 lbs",
+          "Peak Downforce": "1,895 lbs @ 177 mph"
+        },
+        "production": {
+          "Designer / Driver": "Andreas Preuninger",
+          "Est. MSRP / Cost": "$223,800+",
+          "Nürburgring Time": "6:49.328"
+        },
+        "history": "The 992-generation Porsche 911 GT3 RS is the most extreme naturally aspirated 911 ever built for public roads. It introduced active aerodynamics borrowed from Formula 1, including a Drag Reduction System (DRS). Its central radiator concept, replacing the traditional three-radiator setup, freed up space for massive active aero flaps in the front bumper. The aero package produces twice as much downforce as its predecessor and three times as much as a standard GT3."
+      }
+    },
+    {
+      "id": "porsche_918_spyder",
+      "brand": "Porsche",
+      "name": "918 Spyder",
+      "type": "car",
+      "modelUrl": "/models/cars/porsche_918_spyder.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "887 hp",
+        "engine": "4.6L V8 Hybrid",
+        "0_60": "2.2s",
+        "top_speed": "214 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "4.6L V8 Hybrid",
+          "Drivetrain": "Mid-Engine, AWD",
+          "Transmission": "7-Speed PDK",
+          "Horsepower": "887 hp",
+          "0-60 mph": "2.2s",
+          "Top Speed": "214 mph",
+          "Curb Weight": "3,602 lbs",
+          "Peak Downforce": "700+ lbs"
+        },
+        "production": {
+          "Designer / Driver": "Michael Mauer",
+          "Est. MSRP / Cost": "$845,000",
+          "Nürburgring Time": "6:57.00"
+        },
+        "history": "The 918 Spyder was Porsche's entry into the 'Holy Trinity' of hypercars. It set a massive benchmark by being the first production car to break the 7-minute barrier at the Nürburgring. Its plug-in hybrid architecture utilizes two electric motors alongside a screaming naturally aspirated V8 derived from the RS Spyder LMP2 race car."
+      }
+    },
+    {
+      "id": "mclaren_p1",
+      "brand": "McLaren",
+      "name": "P1",
+      "type": "car",
+      "modelUrl": "/models/cars/mclaren_p1.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "903 hp",
+        "engine": "3.8L Twin-Turbo V8 Hybrid",
+        "0_60": "2.7s",
+        "top_speed": "217 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "3.8L Twin-Turbo V8 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "7-Speed Dual-Clutch",
+          "Horsepower": "903 hp",
+          "0-60 mph": "2.7s",
+          "Top Speed": "217 mph",
+          "Curb Weight": "3,411 lbs",
+          "Peak Downforce": "1,323 lbs @ 160 mph"
+        },
+        "production": {
+          "Designer / Driver": "Frank Stephenson",
+          "Est. MSRP / Cost": "$1,150,000",
+          "Nürburgring Time": "Unknown (Sub 7-min)"
+        },
+        "history": "Considered the spiritual successor to the F1, the McLaren P1 redefined the integration of hybrid technology for sheer track performance. It utilizes an electric motor specifically to fill the torque gap of its massive twin turbos (a system called IPAS), resulting in instantaneous throttle response. In 'Race Mode', the car drops by 50mm and extends its massive rear wing to generate GT3-levels of downforce."
+      }
+    },
+    {
+      "id": "mclaren_720s",
+      "brand": "McLaren",
+      "name": "720S",
+      "type": "car",
+      "modelUrl": "/models/cars/mclaren_720s.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "710 hp",
+        "engine": "4.0L Twin-Turbo V8",
+        "0_60": "2.8s",
+        "top_speed": "212 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "4.0L Twin-Turbo V8",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "7-Speed SSG",
+          "Horsepower": "710 hp",
+          "0-60 mph": "2.8s",
+          "Top Speed": "212 mph",
+          "Curb Weight": "3,128 lbs",
+          "Peak Downforce": "High (Active Aero)"
+        },
+        "production": {
+          "Designer / Driver": "Robert Melville",
+          "Est. MSRP / Cost": "$299,000",
+          "Nürburgring Time": "7:08.34"
+        },
+        "history": "The 720S introduced McLaren's Monocage II carbon fiber chassis, making it significantly lighter and stiffer than its competitors. Its design is dictated heavily by aerodynamics, utilizing double-skin dihedral doors that channel air directly into the high-temperature radiators, eliminating the need for side intakes entirely."
+      }
+    },
+    {
+      "id": "ferrari_laferrari",
+      "brand": "Ferrari",
+      "name": "LaFerrari",
+      "type": "car",
+      "modelUrl": "/models/cars/ferrari_laferrari.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "950 hp",
+        "engine": "6.3L V12 Hybrid (HY-KERS)",
+        "0_60": "2.4s",
+        "top_speed": "218 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "6.3L V12 Hybrid (HY-KERS)",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "7-Speed Dual-Clutch",
+          "Horsepower": "950 hp",
+          "0-60 mph": "2.4s",
+          "Top Speed": "218 mph",
+          "Curb Weight": "3,495 lbs",
+          "Peak Downforce": "800 lbs+"
+        },
+        "production": {
+          "Designer / Driver": "Flavio Manzoni",
+          "Est. MSRP / Cost": "$1,416,000",
+          "Nürburgring Time": "Under 7:00.00"
+        },
+        "history": "The definitive Ferrari of the 2010s. The 'LaFerrari' (literally 'The Ferrari') paired the company's legendary screaming V12 with a Formula 1-derived KERS (Kinetic Energy Recovery System). This provided a massive torque fill, allowing the car to deliver brutal acceleration at any RPM without the lag of turbochargers."
+      }
+    },
+    {
+      "id": "ferrari_f40",
+      "brand": "Ferrari",
+      "name": "F40",
+      "type": "car",
+      "modelUrl": "/models/cars/ferrari_f40.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "471 hp",
+        "engine": "2.9L Twin-Turbo V8",
+        "0_60": "4.2s",
+        "top_speed": "201 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "2.9L Twin-Turbo V8",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "5-Speed Manual",
+          "Horsepower": "471 hp",
+          "0-60 mph": "4.2s",
+          "Top Speed": "201 mph",
+          "Curb Weight": "2,767 lbs",
+          "Peak Downforce": "Moderate"
+        },
+        "production": {
+          "Designer / Driver": "Leonardo Fioravanti",
+          "Est. MSRP / Cost": "$400,000 (1987)",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "The last Ferrari personally approved by Enzo Ferrari. Built to celebrate the brand's 40th anniversary, it was the first production car to break the 200 mph barrier. It featured a kevlar, carbon fiber, and aluminum body for extreme lightness. It had no door handles, no glove box, no carpets, and no radio—just pure, terrifying driving dynamics."
+      }
+    },
+    {
+      "id": "lamborghini_aventador_svj",
+      "brand": "Lamborghini",
+      "name": "Aventador SVJ",
+      "type": "car",
+      "modelUrl": "/models/cars/lamborghini_aventador_svj.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "759 hp",
+        "engine": "6.5L Naturally Aspirated V12",
+        "0_60": "2.7s",
+        "top_speed": "217 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "6.5L Naturally Aspirated V12",
+          "Drivetrain": "Mid-Engine, AWD",
+          "Transmission": "7-Speed ISR",
+          "Horsepower": "759 hp",
+          "0-60 mph": "2.7s",
+          "Top Speed": "217 mph",
+          "Curb Weight": "3,362 lbs",
+          "Peak Downforce": "1,100 lbs+"
+        },
+        "production": {
+          "Designer / Driver": "Mitja Borkert",
+          "Est. MSRP / Cost": "$515,000",
+          "Nürburgring Time": "6:44.97"
+        },
+        "history": "The Super Veloce Jota (SVJ) represents the pinnacle of Lamborghini's V12 lineage. It features ALA 2.0 (Aerodinamica Lamborghini Attiva), an active aerodynamics system that vectors airflow through the chassis and rear wing to stall the wing for top speed, or maximize downforce on specific wheels for cornering. It shattered the Nürburgring production car record upon its release."
+      }
+    },
+    {
+      "id": "lamborghini_huracan_performante",
+      "brand": "Lamborghini",
+      "name": "Huracán Performante",
+      "type": "car",
+      "modelUrl": "/models/cars/lamborghini_huracan_performante.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "631 hp",
+        "engine": "5.2L Naturally Aspirated V10",
+        "0_60": "2.9s",
+        "top_speed": "202 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "5.2L Naturally Aspirated V10",
+          "Drivetrain": "Mid-Engine, AWD",
+          "Transmission": "7-Speed Dual-Clutch",
+          "Horsepower": "631 hp",
+          "0-60 mph": "2.9s",
+          "Top Speed": "202 mph",
+          "Curb Weight": "3,047 lbs",
+          "Peak Downforce": "750 lbs"
+        },
+        "production": {
+          "Designer / Driver": "Filippo Perini",
+          "Est. MSRP / Cost": "$274,390",
+          "Nürburgring Time": "6:52.01"
+        },
+        "history": "The Performante revolutionized track-focused supercars by introducing Lamborghini's ALA active aero system. Combined with a massive weight reduction using forged composites and a tuned V10, it briefly held the Nurburgring lap record, proving that intelligent aerodynamics could defeat cars with significantly more horsepower."
+      }
+    },
+    {
+      "id": "audi_r8_v10",
+      "brand": "Audi",
+      "name": "R8 V10 Plus",
+      "type": "car",
+      "modelUrl": "/models/cars/audi_r8_v10.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "602 hp",
+        "engine": "5.2L Naturally Aspirated V10",
+        "0_60": "3.2s",
+        "top_speed": "205 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "5.2L Naturally Aspirated V10",
+          "Drivetrain": "Mid-Engine, AWD (Quattro)",
+          "Transmission": "7-Speed S tronic",
+          "Horsepower": "602 hp",
+          "0-60 mph": "3.2s",
+          "Top Speed": "205 mph",
+          "Curb Weight": "3,516 lbs",
+          "Peak Downforce": "Low"
+        },
+        "production": {
+          "Designer / Driver": "Frank Lamberty",
+          "Est. MSRP / Cost": "$191,000",
+          "Nürburgring Time": "7:32.00"
+        },
+        "history": "Sharing its chassis and legendary V10 engine with the Lamborghini Huracán, the R8 V10 Plus wraps devastating performance in a refined, daily-drivable package. It relies on a flat underbody and a rear diffuser to manage airflow, keeping the upper body clean and elegant."
+      }
+    },
+    {
+      "id": "bugatti_chiron",
+      "brand": "Bugatti",
+      "name": "Chiron Super Sport",
+      "type": "car",
+      "modelUrl": "/models/cars/bugatti_chiron.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "1,578 hp",
+        "engine": "8.0L Quad-Turbo W16",
+        "0_60": "2.3s",
+        "top_speed": "273 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "8.0L Quad-Turbo W16",
+          "Drivetrain": "Mid-Engine, AWD",
+          "Transmission": "7-Speed Dual-Clutch",
+          "Horsepower": "1,578 hp",
+          "0-60 mph": "2.3s",
+          "Top Speed": "273 mph",
+          "Curb Weight": "4,360 lbs",
+          "Peak Downforce": "Variable (Hydraulic Wing)"
+        },
+        "production": {
+          "Designer / Driver": "Achim Anscheidt",
+          "Est. MSRP / Cost": "$3,825,000",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "An engineering marvel designed to bend physics. The Chiron Super Sport was built specifically for top speed stability, featuring a 'longtail' body that extends the rear by 25cm to reduce aerodynamic stall. It famously broke the 300 mph barrier (in 300+ spec), utilizing cooling systems that cycle hundreds of liters of water per minute to keep the massive W16 from melting."
+      }
+    },
+    {
+      "id": "nissan_gtr_nismo",
+      "brand": "Nissan",
+      "name": "GT-R Nismo",
+      "type": "car",
+      "modelUrl": "/models/cars/nissan_gtr_nismo.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "600 hp",
+        "engine": "3.8L Twin-Turbo V6",
+        "0_60": "2.5s",
+        "top_speed": "205 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "3.8L Twin-Turbo V6",
+          "Drivetrain": "Front-Mid, AWD",
+          "Transmission": "6-Speed Dual-Clutch",
+          "Horsepower": "600 hp",
+          "0-60 mph": "2.5s",
+          "Top Speed": "205 mph",
+          "Curb Weight": "3,865 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Shiro Nakamura",
+          "Est. MSRP / Cost": "$210,740",
+          "Nürburgring Time": "7:08.68"
+        },
+        "history": "The absolute peak of 'Godzilla'. The Nismo edition utilizes high-flow turbochargers taken directly from Nissan's GT3 race car. The carbon fiber body panels reduce weight, while the aggressive aerodynamics provide supreme high-speed stability. It relies heavily on its ATTESA E-TS all-wheel-drive system to brutally launch out of corners."
+      }
+    },
+    {
+      "id": "bmw_m4_csl",
+      "brand": "BMW",
+      "name": "M4 CSL",
+      "type": "car",
+      "modelUrl": "/models/cars/bmw_m4_csl.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "543 hp",
+        "engine": "3.0L Twin-Turbo Inline-6",
+        "0_60": "3.6s",
+        "top_speed": "191 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "3.0L Twin-Turbo Inline-6",
+          "Drivetrain": "Front-Engine, RWD",
+          "Transmission": "8-Speed Automatic",
+          "Horsepower": "543 hp",
+          "0-60 mph": "3.6s",
+          "Top Speed": "191 mph",
+          "Curb Weight": "3,582 lbs",
+          "Peak Downforce": "Moderate"
+        },
+        "production": {
+          "Designer / Driver": "Adrian van Hooydonk",
+          "Est. MSRP / Cost": "$140,895",
+          "Nürburgring Time": "7:15.67"
+        },
+        "history": "Coupe Sport Leichtbau (CSL) is a legendary moniker for BMW. The M4 CSL strips 240 pounds from the standard car by removing the rear seats, installing fixed carbon buckets, and using a carbon fiber hood, roof, and trunk. It is the fastest production BMW ever to lap the Nürburgring."
+      }
+    },
+    {
+      "id": "mercedes_amg_gt",
+      "brand": "Mercedes",
+      "name": "AMG GT Black Series",
+      "type": "car",
+      "modelUrl": "/models/cars/mercedes_amg_gt.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "720 hp",
+        "engine": "4.0L Twin-Turbo V8",
+        "0_60": "3.1s",
+        "top_speed": "202 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "4.0L Twin-Turbo V8",
+          "Drivetrain": "Front-Mid, RWD",
+          "Transmission": "7-Speed Dual-Clutch",
+          "Horsepower": "720 hp",
+          "0-60 mph": "3.1s",
+          "Top Speed": "202 mph",
+          "Curb Weight": "3,616 lbs",
+          "Peak Downforce": "882 lbs @ 155 mph"
+        },
+        "production": {
+          "Designer / Driver": "Gorden Wagener",
+          "Est. MSRP / Cost": "$325,000",
+          "Nürburgring Time": "6:43.61"
+        },
+        "history": "The absolute pinnacle of AMG engineering. Unlike any other AMG V8, the Black Series utilizes a flat-plane crankshaft for instant throttle response and a screaming 7200 rpm redline. Its aerodynamics are directly derived from the AMG GT3 race car, featuring a massive dual-plane rear wing and an extended front splitter. It annihilated the Nurburgring lap record upon release."
+      }
+    },
+    {
+      "id": "aston_martin_valkyrie",
+      "brand": "Aston Martin",
+      "name": "Valkyrie",
+      "type": "car",
+      "modelUrl": "/models/cars/aston_martin_valkyrie.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "1,140 hp",
+        "engine": "6.5L Naturally Aspirated V12 Hybrid",
+        "0_60": "2.5s",
+        "top_speed": "250 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "6.5L Naturally Aspirated V12 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "7-Speed Sequential",
+          "Horsepower": "1,140 hp",
+          "0-60 mph": "2.5s",
+          "Top Speed": "250 mph",
+          "Curb Weight": "2,271 lbs",
+          "Peak Downforce": "4,000+ lbs"
+        },
+        "production": {
+          "Designer / Driver": "Adrian Newey",
+          "Est. MSRP / Cost": "$3,200,000",
+          "Nürburgring Time": "Unknown (F1 Pace)"
+        },
+        "history": "Designed by F1 aerodynamic genius Adrian Newey, the Valkyrie is effectively a Le Mans prototype for the road. Its floor is completely open, utilizing massive Venturi tunnels that run the entire length of the car to generate an absurd 4,000 lbs of downforce without relying on drag-inducing upper wings. The Cosworth V12 revs to an ear-shattering 11,100 rpm."
+      }
+    },
+    {
+      "id": "chevrolet_corvette_z06",
+      "brand": "Chevrolet",
+      "name": "Corvette Z06 (C8)",
+      "type": "car",
+      "modelUrl": "/models/cars/chevrolet_corvette_z06.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "670 hp",
+        "engine": "5.5L Naturally Aspirated V8",
+        "0_60": "2.6s",
+        "top_speed": "195 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "5.5L Naturally Aspirated V8",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed Dual-Clutch",
+          "Horsepower": "670 hp",
+          "0-60 mph": "2.6s",
+          "Top Speed": "195 mph",
+          "Curb Weight": "3,434 lbs",
+          "Peak Downforce": "734 lbs @ 186 mph"
+        },
+        "production": {
+          "Designer / Driver": "Tom Peters",
+          "Est. MSRP / Cost": "$109,295",
+          "Nürburgring Time": "Unknown"
+        },
+        "history": "The C8 Z06 is an American supercar that punches astronomically above its price tag. It features the LT6, the most powerful naturally aspirated production V8 ever made, featuring a flat-plane crank that revs to 8,600 rpm. Equipped with the Z07 package, it features carbon ceramic brakes, Cup 2 R tires, and extreme aerodynamics."
+      }
+    },
+    {
+      "id": "toyota_supra",
+      "brand": "Toyota",
+      "name": "GR Supra (A90)",
+      "type": "car",
+      "modelUrl": "/models/cars/toyota_supra.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "382 hp",
+        "engine": "3.0L Turbo Inline-6",
+        "0_60": "3.9s",
+        "top_speed": "155 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "3.0L Turbo Inline-6",
+          "Drivetrain": "Front-Engine, RWD",
+          "Transmission": "8-Speed Auto / 6-Speed Manual",
+          "Horsepower": "382 hp",
+          "0-60 mph": "3.9s",
+          "Top Speed": "155 mph",
+          "Curb Weight": "3,400 lbs",
+          "Peak Downforce": "Low"
+        },
+        "production": {
+          "Designer / Driver": "Nobuo Nakamura",
+          "Est. MSRP / Cost": "$54,500",
+          "Nürburgring Time": "7:52.00"
+        },
+        "history": "The long-awaited return of the Supra moniker. Co-developed with BMW, the A90 Supra provides a short wheelbase and a wide track, achieving the perfect 'golden ratio' for handling. It remains a legendary tuning platform, with its B58 engine highly capable of handling massive aftermarket power."
+      }
+    },
+    {
+      "id": "dodge_viper_acr",
+      "brand": "Dodge",
+      "name": "Viper ACR (Extreme)",
+      "type": "car",
+      "modelUrl": "/models/cars/dodge_viper_acr.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "645 hp",
+        "engine": "8.4L Naturally Aspirated V10",
+        "0_60": "3.3s",
+        "top_speed": "177 mph",
+        "driven_by": "N/A"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "8.4L Naturally Aspirated V10",
+          "Drivetrain": "Front-Mid, RWD",
+          "Transmission": "6-Speed Manual",
+          "Horsepower": "645 hp",
+          "0-60 mph": "3.3s",
+          "Top Speed": "177 mph",
+          "Curb Weight": "3,374 lbs",
+          "Peak Downforce": "1,700 lbs @ 177 mph"
+        },
+        "production": {
+          "Designer / Driver": "Ralph Gilles",
+          "Est. MSRP / Cost": "$118,795",
+          "Nürburgring Time": "7:01.30"
+        },
+        "history": "The ultimate street-legal track weapon. The Viper ACR Extreme Aero Package produces more downforce than any production car of its era, completely destroying top speed but enabling unbelievable cornering speeds. It set 13 track records across the United States. It relies solely on mechanical grip, massive aerodynamics, and a monstrous V10 engine, possessing zero modern electronic driving aids."
+      }
+    },
+    {
+      "id": "f1_rb19",
+      "brand": "Formula 1",
+      "name": "Red Bull RB19",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_rb19.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "1,000+ hp",
+        "engine": "1.6L Turbo V6 Hybrid",
+        "0_60": "2.1s",
+        "top_speed": "220 mph",
+        "driven_by": "Max Verstappen"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.6L Turbo V6 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed Seamless Shift",
+          "Horsepower": "1,000+ hp",
+          "0-60 mph": "2.1s",
+          "Top Speed": "220 mph",
+          "Curb Weight": "1,759 lbs",
+          "Peak Downforce": "Extreme (Ground Effect)"
+        },
+        "production": {
+          "Designer / Driver": "Max Verstappen",
+          "Est. MSRP / Cost": "$15,000,000+",
+          "Nürburgring Time": "N/A (F1 Specs)"
+        },
+        "history": "Statistically the most dominant car in Formula 1 history. Driven by Max Verstappen and Sergio Perez, the RB19 won 21 out of 22 races in the 2023 season. Designed by Adrian Newey, its mastery of the ground-effect regulations allowed it to run extremely low to the ground without suffering from the 'porpoising' issues that plagued its competitors."
+      }
+    },
+    {
+      "id": "f1_w11",
+      "brand": "Formula 1",
+      "name": "Mercedes-AMG W11",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_w11.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "1,050+ hp",
+        "engine": "1.6L Turbo V6 Hybrid",
+        "0_60": "2.0s",
+        "top_speed": "220 mph",
+        "driven_by": "Lewis Hamilton"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.6L Turbo V6 Hybrid",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "8-Speed Seamless Shift",
+          "Horsepower": "1,050+ hp",
+          "0-60 mph": "2.0s",
+          "Top Speed": "220 mph",
+          "Curb Weight": "1,644 lbs",
+          "Peak Downforce": "Extreme (Multi-Wing)"
+        },
+        "production": {
+          "Designer / Driver": "Lewis Hamilton",
+          "Est. MSRP / Cost": "$15,000,000+",
+          "Nürburgring Time": "N/A (F1 Specs)"
+        },
+        "history": "Widely regarded as the fastest Formula 1 car ever built. Operating under the high-downforce regulations of 2020, the W11 smashed track records across the globe. It famously introduced the DAS (Dual Axis Steering) system, allowing the driver to change the toe angle of the front wheels by pulling the steering wheel, optimizing tire temperatures."
+      }
+    },
+    {
+      "id": "f1_f2004",
+      "brand": "Formula 1",
+      "name": "Ferrari F2004",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_f2004.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "900+ hp",
+        "engine": "3.0L Naturally Aspirated V10",
+        "0_60": "2.3s",
+        "top_speed": "215 mph",
+        "driven_by": "Michael Schumacher"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "3.0L Naturally Aspirated V10",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "7-Speed Semi-Auto",
+          "Horsepower": "900+ hp",
+          "0-60 mph": "2.3s",
+          "Top Speed": "215 mph",
+          "Curb Weight": "1,333 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Michael Schumacher",
+          "Est. MSRP / Cost": "Priceless",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "The pinnacle of the V10 era. The F2004 won 15 out of 18 races in the 2004 season, securing Michael Schumacher's 7th World Championship. The car was so incredibly light and the engine so powerful that its lap records stood for well over a decade, with many drivers considering it the absolute peak of raw F1 driving experience."
+      }
+    },
+    {
+      "id": "f1_mp44",
+      "brand": "Formula 1",
+      "name": "McLaren MP4/4",
+      "type": "f1",
+      "modelUrl": "/models/cars/f1_mp44.glb",
+      "thumbnails": [],
+      "specs": {
+        "power": "700-1200+ hp (Boost)",
+        "engine": "1.5L Twin-Turbo V6",
+        "0_60": "2.5s",
+        "top_speed": "207 mph",
+        "driven_by": "Ayrton Senna"
+      },
+      "library": {
+        "engineering": {
+          "Engine Layout": "1.5L Twin-Turbo V6",
+          "Drivetrain": "Mid-Engine, RWD",
+          "Transmission": "6-Speed Manual",
+          "Horsepower": "700-1200+ hp (Boost)",
+          "0-60 mph": "2.5s",
+          "Top Speed": "207 mph",
+          "Curb Weight": "1,190 lbs",
+          "Peak Downforce": "High"
+        },
+        "production": {
+          "Designer / Driver": "Ayrton Senna",
+          "Est. MSRP / Cost": "Priceless",
+          "Nürburgring Time": "N/A"
+        },
+        "history": "The icon of the late 80s turbo era. Designed by Gordon Murray and Steve Nichols, the MP4/4 introduced a radically low-slung chassis layout. Driven by Ayrton Senna and Alain Prost, the car won 15 out of 16 races in the 1988 season, a win percentage of 93.8% that was only recently broken by the RB19."
+      }
+    },
+    {
+      "id": "test_box",
+      "brand": "Test",
+      "name": "Aerodynamic Box",
+      "type": "car",
+      "modelUrl": "primitive:box",
+      "thumbnails": [],
+      "specs": {
+        "power": "0 hp"
+      },
+      "library": {
+        "history": "A literal box used to test maximum thermal drag coefficient."
+      }
+    },
+    {
+      "id": "test_cone",
+      "brand": "Test",
+      "name": "Aerodynamic Cone",
+      "type": "car",
+      "modelUrl": "primitive:cone",
+      "thumbnails": [],
+      "specs": {
+        "power": "0 hp"
+      },
+      "library": {
+        "history": "A cone used to simulate optimal air slicing."
+      }
+    },
+    {
+      "id": "test_sphere",
+      "brand": "Test",
+      "name": "Aerodynamic Sphere",
+      "type": "car",
+      "modelUrl": "primitive:sphere",
+      "thumbnails": [],
+      "specs": {
+        "power": "0 hp"
+      },
+      "library": {
+        "history": "A sphere used to study laminar flow separation."
+      }
+    }
   ]
 }

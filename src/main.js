@@ -229,21 +229,32 @@ function showLibraryInfo(vehicle) {
   let logoHTML = logoMap[vehicle.brand] ? `<img src="${logoMap[vehicle.brand]}" style="height: 40px; margin-right: 1rem; filter:drop-shadow(0 0 5px rgba(255,255,255,0.5))">` : '';
   document.getElementById('lib-car-name').innerHTML = `${logoHTML} ${vehicle.name}`;
   
-  let html = `<div class="library-section"><h3>Specifications</h3><p><strong>Brand:</strong> ${vehicle.brand}</p>`;
-  for (const [key, value] of Object.entries(vehicle.specs || {})) {
-    html += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> ${value}</p>`;
-  }
-  html += `</div>`;
+  let html = '';
   
   if(vehicle.library) {
-    html += `<div class="library-section"><h3>Encyclopedia Data</h3>`;
-    for (const [key, value] of Object.entries(vehicle.library)) {
-      html += `<p><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> ${value}</p>`;
+    if (vehicle.library.engineering) {
+       html += `<div class="library-section" style="grid-column: 1 / -1;"><h3>Engineering & Performance</h3><div class="library-spec-grid">`;
+       for (const [key, value] of Object.entries(vehicle.library.engineering)) {
+         html += `<div class="library-spec-item"><strong>${key}</strong><br>${value}</div>`;
+       }
+       html += `</div></div>`;
     }
-    html += `</div>`;
+    
+    if (vehicle.library.production) {
+       html += `<div class="library-section" style="grid-column: 1 / -1;"><h3>Production Data</h3><div class="library-spec-grid">`;
+       for (const [key, value] of Object.entries(vehicle.library.production)) {
+         html += `<div class="library-spec-item"><strong>${key}</strong><br>${value}</div>`;
+       }
+       html += `</div></div>`;
+    }
+
+    if (vehicle.library.history) {
+       html += `<div class="library-section" style="grid-column: 1 / -1;"><h3>Historical Overview</h3><p>${vehicle.library.history}</p></div>`;
+    }
   } else {
-    html += `<div class="library-section"><h3>Encyclopedia Data</h3><p>Detailed historical and engineering records are currently being compiled for this vehicle.</p></div>`;
+    html += `<div class="library-section" style="grid-column: 1 / -1;"><h3>Encyclopedia Data</h3><p>Detailed historical and engineering records are currently being compiled for this vehicle.</p></div>`;
   }
+  
   document.getElementById('lib-content').innerHTML = html;
 }
 
