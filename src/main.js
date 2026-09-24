@@ -29,7 +29,6 @@ scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).textur
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
 
-// =======================
 // AEROLAB STREAMLINES
 // =======================
 let windInstanced = null;
@@ -38,8 +37,8 @@ let isThermal = false;
 const windCount = 3000; 
 
 function createAeroLab() {
-  const geometry = new THREE.BoxGeometry(0.015, 0.015, 1.2);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+  const geometry = new THREE.BoxGeometry(0.015, 0.015, 5.0);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
   windInstanced = new THREE.InstancedMesh(geometry, material, windCount);
   const dummy = new THREE.Object3D();
   const vels = new Float32Array(windCount);
@@ -47,7 +46,7 @@ function createAeroLab() {
     dummy.position.set((Math.random() - 0.5) * 8, Math.random() * 4.0 + 0.1, 10 + Math.random() * 15);
     dummy.updateMatrix();
     windInstanced.setMatrixAt(i, dummy.matrix);
-    vels[i] = Math.random() * 0.2 + 0.8;
+    vels[i] = Math.random() * 0.3 + 0.9;
   }
   windInstanced.userData.velocities = vels;
   windInstanced.visible = false;
@@ -80,23 +79,23 @@ let appState = {
   intent: 'home' 
 };
 
-// Extremely robust hardcoded logo map (WorldVectorLogo CDNs)
+// Extremely robust hardcoded logo map
 const logoMap = {
-  "Porsche": "https://cdn.worldvectorlogo.com/logos/porsche-6.svg",
-  "McLaren": "https://cdn.worldvectorlogo.com/logos/mclaren-4.svg",
-  "Ferrari": "https://cdn.worldvectorlogo.com/logos/ferrari-ges.svg",
-  "Lamborghini": "https://cdn.worldvectorlogo.com/logos/lamborghini-1.svg",
-  "Audi": "https://cdn.worldvectorlogo.com/logos/audi-11.svg",
-  "Bugatti": "https://cdn.worldvectorlogo.com/logos/bugatti-logo.svg",
-  "Nissan": "https://cdn.worldvectorlogo.com/logos/nissan-6.svg",
-  "BMW": "https://cdn.worldvectorlogo.com/logos/bmw.svg",
-  "Mercedes": "https://cdn.worldvectorlogo.com/logos/mercedes-benz-9.svg",
-  "Koenigsegg": "https://cdn.worldvectorlogo.com/logos/koenigsegg.svg",
-  "Aston Martin": "https://cdn.worldvectorlogo.com/logos/aston-martin-1.svg",
-  "Chevrolet": "https://cdn.worldvectorlogo.com/logos/chevrolet-1.svg",
-  "Toyota": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/512px-Toyota.svg.png",
-  "Dodge": "https://cdn.worldvectorlogo.com/logos/dodge-2.svg",
-  "Formula 1": "https://cdn.worldvectorlogo.com/logos/f1-2.svg"
+  "Porsche": "https://www.car-logos.org/wp-content/uploads/2011/09/porsche.png",
+  "McLaren": "https://www.car-logos.org/wp-content/uploads/2011/09/mclaren.png",
+  "Ferrari": "https://www.car-logos.org/wp-content/uploads/2011/09/ferrari.png",
+  "Lamborghini": "https://www.car-logos.org/wp-content/uploads/2011/09/lamborghini.png",
+  "Audi": "https://www.car-logos.org/wp-content/uploads/2011/09/audi.png",
+  "Bugatti": "https://www.car-logos.org/wp-content/uploads/2011/09/bugatti.png",
+  "Nissan": "https://www.car-logos.org/wp-content/uploads/2011/09/nissan.png",
+  "BMW": "https://www.car-logos.org/wp-content/uploads/2011/09/bmw.png",
+  "Mercedes": "https://www.car-logos.org/wp-content/uploads/2011/09/mercedes.png",
+  "Koenigsegg": "https://www.car-logos.org/wp-content/uploads/2011/09/koenigsegg.png",
+  "Aston Martin": "https://www.car-logos.org/wp-content/uploads/2011/09/aston-martin.png",
+  "Chevrolet": "https://www.car-logos.org/wp-content/uploads/2011/09/chevrolet.png",
+  "Toyota": "https://www.car-logos.org/wp-content/uploads/2011/09/toyota.png",
+  "Dodge": "https://www.car-logos.org/wp-content/uploads/2011/09/dodge.png",
+  "Formula 1": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/512px-F1.svg.png"
 };
 
 const LOCAL_FALLBACK_IMG = "/images/fallback.jpg"; 
@@ -405,7 +404,14 @@ function loadVehicle(vehicle) {
         const geo = new THREE.CapsuleGeometry(1.0, 3, 32, 32); geo.rotateX(Math.PI/2);
         const mesh = new THREE.Mesh(geo, bodyMat);
         mesh.position.y = 1.0; mesh.userData.isCarPaint = true; mesh.userData.originalMat = bodyMat;
-        group.add(mesh);
+        
+        // Add a vertical spoiler to create extreme drag in the thermal view
+        const spoilerGeo = new THREE.BoxGeometry(1.2, 0.8, 0.1);
+        const spoiler = new THREE.Mesh(spoilerGeo, bodyMat);
+        spoiler.position.set(0, 2.0, -1.8);
+        spoiler.userData.isCarPaint = true; spoiler.userData.originalMat = bodyMat;
+        
+        group.add(mesh); group.add(spoiler);
       }
       
       finalizeLoad(group);
