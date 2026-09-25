@@ -82,13 +82,13 @@ let appState = {
 // Extremely robust hardcoded logo map
 const logoMap = {
   "Porsche": "https://cdn.worldvectorlogo.com/logos/porsche-6.svg",
-  "McLaren": "https://www.google.com/s2/favicons?sz=256&domain=mclaren.com",
+  "McLaren": "https://upload.wikimedia.org/wikipedia/en/thumb/6/66/McLaren_Racing_logo.svg/512px-McLaren_Racing_logo.svg.png",
   "Ferrari": "https://cdn.worldvectorlogo.com/logos/ferrari-ges.svg",
   "Lamborghini": "https://cdn.worldvectorlogo.com/logos/lamborghini-1.svg",
   "Audi": "https://cdn.worldvectorlogo.com/logos/audi-11.svg",
   "Bugatti": "https://cdn.worldvectorlogo.com/logos/bugatti-logo.svg",
   "Nissan": "https://cdn.worldvectorlogo.com/logos/nissan-6.svg",
-  "BMW": "https://www.google.com/s2/favicons?sz=256&domain=bmw.com",
+  "BMW": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/512px-BMW.svg.png",
   "Mercedes": "https://cdn.worldvectorlogo.com/logos/mercedes-benz-9.svg",
   "Koenigsegg": "https://cdn.worldvectorlogo.com/logos/koenigsegg.svg",
   "Aston Martin": "https://cdn.worldvectorlogo.com/logos/aston-martin-1.svg",
@@ -339,12 +339,47 @@ window.changeMaterialColor = function(partType, hexColor) {
   });
 };
 
+let windProParticles = null;
+let isWindPro = false;
+const windProCount = 20000;
+
+function createWindPro() {
+  const geometry = new THREE.BoxGeometry(0.015, 0.015, 0.6);
+  const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+  windProParticles = new THREE.InstancedMesh(geometry, material, windProCount);
+  
+  const dummy = new THREE.Object3D();
+  const vels = new Float32Array(windProCount);
+  
+  for (let i = 0; i < windProCount; i++) {
+    dummy.position.set((Math.random() - 0.5) * 3, Math.random() * 2.0 + 0.1, 5 + Math.random() * 15);
+    dummy.updateMatrix();
+    windProParticles.setMatrixAt(i, dummy.matrix);
+    windProParticles.setColorAt(i, new THREE.Color(0x0044ff));
+    vels[i] = Math.random() * 0.2 + 1.0;
+  }
+  windProParticles.userData.velocities = vels;
+  windProParticles.visible = false;
+  scene.add(windProParticles);
+}
+createWindPro();
+
 function activateAeroModeLogic() {
-  isAeroLab = true; windInstanced.visible = true; 
-  // FIX: Explicitly keep controls enabled in Aero Mode so user can move mouse!
   controls.enabled = true; 
   document.getElementById('aero-tv-overlay').classList.remove('hidden');
-  scene.background = new THREE.Color('#00030a');
+  
+  if (appState.intent === 'wind') {
+    isAeroLab = false; isWindPro = true;
+    if(windInstanced) windInstanced.visible = false;
+    windProParticles.visible = true;
+    scene.background = new THREE.Color('#000000');
+  } else {
+    isWindPro = false; isAeroLab = true; 
+    windInstanced.visible = true; 
+    if(windProParticles) windProParticles.visible = false;
+    scene.background = new THREE.Color('#00030a');
+  }
+  
   setAeroCamera('isometric');
 }
 
@@ -371,7 +406,7 @@ function loadVehicle(vehicle) {
   const finalizeLoad = (model) => {
     appState.currentModel = model;
     scene.add(model);
-    if (appState.intent === 'aero') activateAeroModeLogic();
+    if (appState.intent === 'aero' || appState.intent === 'wind') activateAeroModeLogic();
     else gsap.from(camera.position, { duration: 2, x: 8, y: 3, z: 8, ease: 'power3.out' });
   };
 
@@ -454,8 +489,9 @@ window.setAeroCamera = function(pos) {
 };
 
 function resetSceneDefaults() {
-  isAeroLab = false; isThermal = false;
+  isAeroLab = false; isThermal = false; isWindPro = false;
   windInstanced.visible = false;
+  if(windProParticles) windProParticles.visible = false;
   controls.enabled = true;
   scene.background = isLightMode ? new THREE.Color('#e0e5ec') : new THREE.Color('#111216');
   if (appState.currentModel) appState.currentModel.traverse((c) => { if (c.isMesh && c.userData.originalMat) c.material = c.userData.originalMat; });
@@ -546,6 +582,56 @@ function animate() {
       dummy.updateMatrix(); windInstanced.setMatrixAt(i, dummy.matrix);
     }
     windInstanced.instanceMatrix.needsUpdate = true;
+  }
+  
+  if (isWindPro && windProParticles) {
+    const spd = document.getElementById('wind-speed').value / 50;
+    const vels = windProParticles.userData.velocities;
+    
+    if (appState.currentModel) {
+      carBox.setFromObject(appState.currentModel);
+      carBox.getCenter(carCenter);
+      carBox.getSize(carSize);
+    }
+    
+    for (let i = 0; i < windProCount; i++) {
+      windProParticles.getMatrixAt(i, dummy.matrix); dummy.position.setFromMatrixPosition(dummy.matrix);
+      dummy.position.z -= vels[i] * spd * 1.5;
+      
+      let speedFactor = 0; // for coloring
+      if (appState.currentModel) {
+        if (dummy.position.z > carBox.min.z - 2 && dummy.position.z < carBox.max.z + 1.5) {
+          const distX = dummy.position.x - carCenter.x;
+          const distY = dummy.position.y - carCenter.y;
+          const effectiveWidth = carSize.x/2 + 0.2;
+          const effectiveHeight = carSize.y/2 + 0.2;
+          
+          if (Math.abs(distX) < effectiveWidth && Math.abs(distY) < effectiveHeight && dummy.position.y > 0.02) {
+            const intensity = Math.pow(1.0 - (Math.abs(distX) / effectiveWidth), 2.0);
+            speedFactor = intensity;
+            
+            dummy.position.x += (distX > 0 ? 1 : -1) * (0.08 * spd * intensity);
+            
+            if (distY > -0.2) {
+                if (dummy.position.z > carCenter.z) dummy.position.y += 0.2 * spd * intensity;
+                else dummy.position.y -= 0.01 * spd;
+            } else if (dummy.position.y > 0.05) {
+                dummy.position.y -= 0.08 * spd;
+            }
+          }
+        }
+      }
+      
+      // Color from blue (slow/laminar) to red (fast/turbulent deflection)
+      const color = new THREE.Color();
+      color.setHSL((1.0 - speedFactor) * 0.6, 1.0, 0.5); // 0.6 = blue, 0.0 = red
+      windProParticles.setColorAt(i, color);
+
+      if (dummy.position.z < -10) dummy.position.set((Math.random() - 0.5) * 4, Math.random() * 2.0 + 0.1, 5 + Math.random() * 15);
+      dummy.updateMatrix(); windProParticles.setMatrixAt(i, dummy.matrix);
+    }
+    windProParticles.instanceMatrix.needsUpdate = true;
+    if(windProParticles.instanceColor) windProParticles.instanceColor.needsUpdate = true;
   }
   
   if (appState.intent === 'showroom' && appState.currentModel) {
