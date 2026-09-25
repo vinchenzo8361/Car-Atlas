@@ -37,16 +37,16 @@ let isThermal = false;
 const windCount = 3000; 
 
 function createAeroLab() {
-  const geometry = new THREE.BoxGeometry(0.015, 0.015, 10.0);
-  const material = new THREE.MeshBasicMaterial({ color: 0x0044ff, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+  const geometry = new THREE.BoxGeometry(0.015, 0.015, 15.0);
+  const material = new THREE.MeshBasicMaterial({ color: 0xf0f5ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
   windInstanced = new THREE.InstancedMesh(geometry, material, windCount);
   const dummy = new THREE.Object3D();
   const vels = new Float32Array(windCount);
   for (let i = 0; i < windCount; i++) {
-    dummy.position.set((Math.random() - 0.5) * 8, Math.random() * 4.0 + 0.1, 10 + Math.random() * 15);
+    dummy.position.set((Math.random() - 0.5) * 8, Math.random() * 4.0 + 0.1, 10 + Math.random() * 20);
     dummy.updateMatrix();
     windInstanced.setMatrixAt(i, dummy.matrix);
-    vels[i] = Math.random() * 0.3 + 0.9;
+    vels[i] = Math.random() * 0.4 + 0.8;
   }
   windInstanced.userData.velocities = vels;
   windInstanced.visible = false;
@@ -82,20 +82,20 @@ let appState = {
 // Extremely robust hardcoded logo map
 const logoMap = {
   "Porsche": "https://cdn.worldvectorlogo.com/logos/porsche-6.svg",
-  "McLaren": "https://cdn.worldvectorlogo.com/logos/mclaren-4.svg",
+  "McLaren": "https://www.google.com/s2/favicons?sz=256&domain=mclaren.com",
   "Ferrari": "https://cdn.worldvectorlogo.com/logos/ferrari-ges.svg",
   "Lamborghini": "https://cdn.worldvectorlogo.com/logos/lamborghini-1.svg",
   "Audi": "https://cdn.worldvectorlogo.com/logos/audi-11.svg",
   "Bugatti": "https://cdn.worldvectorlogo.com/logos/bugatti-logo.svg",
   "Nissan": "https://cdn.worldvectorlogo.com/logos/nissan-6.svg",
-  "BMW": "https://cdn.worldvectorlogo.com/logos/bmw.svg",
+  "BMW": "https://www.google.com/s2/favicons?sz=256&domain=bmw.com",
   "Mercedes": "https://cdn.worldvectorlogo.com/logos/mercedes-benz-9.svg",
   "Koenigsegg": "https://cdn.worldvectorlogo.com/logos/koenigsegg.svg",
   "Aston Martin": "https://cdn.worldvectorlogo.com/logos/aston-martin-1.svg",
   "Chevrolet": "https://cdn.worldvectorlogo.com/logos/chevrolet-1.svg",
-  "Toyota": "https://cdn.worldvectorlogo.com/logos/toyota.svg",
-  "Dodge": "https://cdn.worldvectorlogo.com/logos/dodge-2.svg",
-  "Formula 1": "https://cdn.worldvectorlogo.com/logos/f1-2.svg"
+  "Toyota": "https://www.google.com/s2/favicons?sz=256&domain=toyota.com",
+  "Dodge": "https://www.google.com/s2/favicons?sz=256&domain=dodge.com",
+  "Formula 1": "https://www.google.com/s2/favicons?sz=256&domain=formula1.com"
 };
 
 const LOCAL_FALLBACK_IMG = "/images/fallback.jpg"; 
@@ -509,19 +509,32 @@ function animate() {
       
       // Fake CFD / Aero Deflection
       if (appState.currentModel) {
-        if (dummy.position.z > carBox.min.z - 3 && dummy.position.z < carBox.max.z + 1) {
+        if (dummy.position.z > carBox.min.z - 4 && dummy.position.z < carBox.max.z + 2) {
           const distX = dummy.position.x - carCenter.x;
           const distY = dummy.position.y - carCenter.y;
-          const effectiveWidth = carSize.x/2 + 0.6;
-          const effectiveHeight = carSize.y/2 + 0.6;
+          const effectiveWidth = carSize.x/2 + 0.3;
+          const effectiveHeight = carSize.y/2 + 0.3;
           
           if (Math.abs(distX) < effectiveWidth && Math.abs(distY) < effectiveHeight && dummy.position.y > 0.05) {
+            // Very smooth contouring formula: the closer to the center, the harder the push
             const intensity = Math.pow(1.0 - (Math.abs(distX) / effectiveWidth), 2.0);
-            const pushFactor = 0.12 * spd * intensity;
-            dummy.position.x += (distX > 0 ? 1 : -1) * pushFactor;
             
-            if (distY > 0) dummy.position.y += pushFactor * 1.2;
-            else if (dummy.position.y > 0.1) dummy.position.y -= pushFactor * 0.3;
+            // Push gently sideways
+            dummy.position.x += (distX > 0 ? 1 : -1) * (0.05 * spd * intensity);
+            
+            // Push UP over the windshield/roof, mimicking laminar flow
+            if (distY > -0.2) {
+                // If it's hitting the front windshield (Z is high), push UP
+                if (dummy.position.z > carCenter.z) {
+                    dummy.position.y += 0.15 * spd * intensity;
+                } else {
+                    // It's over the roof, maintain height or drop slightly
+                    dummy.position.y -= 0.01 * spd;
+                }
+            } else if (dummy.position.y > 0.1) {
+                // Going under the car
+                dummy.position.y -= 0.05 * spd;
+            }
           }
         }
       } else {
@@ -529,7 +542,7 @@ function animate() {
         else if (dummy.position.z < -3 && dummy.position.y > 0.1) dummy.position.y -= 0.03 * spd;
       }
 
-      if (dummy.position.z < -10) dummy.position.set((Math.random() - 0.5) * 8, Math.random() * 4.0 + 0.1, 10 + Math.random() * 15);
+      if (dummy.position.z < -15) dummy.position.set((Math.random() - 0.5) * 8, Math.random() * 4.0 + 0.1, 10 + Math.random() * 20);
       dummy.updateMatrix(); windInstanced.setMatrixAt(i, dummy.matrix);
     }
     windInstanced.instanceMatrix.needsUpdate = true;
